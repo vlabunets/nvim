@@ -8,17 +8,12 @@ vim.lsp.config.tailwindcss = {
 
 	filetypes = { "html", "mdx", "javascript", "typescript", "javascriptreact", "typescriptreact", "vue", "svelte" },
 
-	init_options = {
-		userLanguages = {
-			eelixir = "html-eex",
-			eruby = "erb",
-		},
-	},
-
 	settings = {
 		tailwindCSS = {
 			classAttributes = { "class", "className", "class:list", "classList", "ngClass" },
 			includeLanguages = {
+				eelixir = "html-eex",
+				eruby = "erb",
 				typescript = "javascript",
 				typescriptreact = "javascript",
 			},

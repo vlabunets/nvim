@@ -52,7 +52,7 @@ require("config.lsp.servers.denols")
 require("config.lsp.servers.yamlls")
 
 -- Load TypeScript server config based on user preference
--- tsgo is the default (experimental, fast); ts_ls is the stable alternative
+-- ts_ls is the default (stable); tsgo is the experimental, faster alternative
 if EcoVim.lsp.typescript_server == "ts_ls" then
     require("config.lsp.servers.ts_ls")
 end

@@ -27,6 +27,7 @@ require("lazy").setup({
   defaults = { lazy = false },
   install = { colorscheme = { "tokyonight" } },
   checker = { enabled = true },
+  rocks = { enabled = false }, -- no plugins need luarocks
   concurrency = 10,
   performance = {
     rtp = {

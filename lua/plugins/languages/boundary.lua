@@ -1,5 +1,5 @@
 return {
-  "Kenzo-Wada/boundary.nvim",
+  "kenzo-pj/boundary.nvim",
   branch = "release",
   ft = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
   opts = {

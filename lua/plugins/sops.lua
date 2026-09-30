@@ -1,6 +1,6 @@
 return {
   {
-    'lucidph3nx/nvim-sops',
+    'prismatic-koi/nvim-sops',
     cmd = { "SopsEncrypt", "SopsDecrypt" },
     event = {},
     opts = {

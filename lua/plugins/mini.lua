@@ -1,12 +1,12 @@
 return {
   {
-    "echasnovski/mini.align",
+    "nvim-mini/mini.align",
     event = "VeryLazy",
     version = "*",
     opts = {}
   },
   {
-    "echasnovski/mini.ai",
+    "nvim-mini/mini.ai",
     event = "VeryLazy",
     version = "*",
     config = function()

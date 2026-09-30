@@ -1,3 +1,14 @@
+-- Show the diagnostic under the cursor after ]g / [g (replaces the deprecated `float` jump option)
+local function open_diagnostic_float(_, bufnr)
+	vim.diagnostic.open_float({
+		bufnr = bufnr,
+		scope = "cursor",
+		focus = false,
+		border = EcoVim.ui.float.border,
+		max_width = 100,
+	})
+end
+
 return {
 	{
 		"neovim/nvim-lspconfig",
@@ -23,7 +34,7 @@ return {
 			})
 
 			-- Determine TypeScript server based on user preference
-			local ts_server = EcoVim.lsp.typescript_server or "tsgo"
+			local ts_server = EcoVim.lsp.typescript_server or "ts_ls"
 			local ts_exclude = ts_server == "tsgo" and "ts_ls" or "tsgo"
 
 			-- Set up Mason-lspconfig
@@ -31,6 +42,7 @@ return {
 				"bashls",
 				"biome",
 				"clangd",
+				"copilot", -- copilot-language-server, required by copilot-lsp (enabled in plugins/ai/copilot.lua)
 				"cssls",
 				"denols",
 				"dockerls",
@@ -84,7 +96,7 @@ return {
 			{ "<leader>clS", "<cmd>LspStart<CR>", desc = "LSP Start" },
 
 			-- Navigation
-			{ "gd", vim.lsp.buf.definition, desc = "Goto Definition" },
+			{ "gd", function() require("config.lsp.utils.definition").goto_definition() end, desc = "Goto Definition" },
 			{ "gr", function() vim.lsp.buf.references({ includeDeclaration = false }) end, desc = "Goto References" },
 			{ "gy", vim.lsp.buf.type_definition, desc = "Goto Type Definition" },
 			{ "gi", vim.lsp.buf.implementation, desc = "Goto Implementation" },
@@ -100,8 +112,8 @@ return {
 
 			-- Diagnostics
 			{ "gl", function() vim.diagnostic.open_float({ border = EcoVim.ui.float.border, max_width = 100 }) end, desc = "Line Diagnostics" },
-			{ "]g", function() vim.diagnostic.jump({ count = 1, float = { border = EcoVim.ui.float.border, max_width = 100 } }) end, desc = "Next Diagnostic" },
-			{ "[g", function() vim.diagnostic.jump({ count = -1, float = { border = EcoVim.ui.float.border, max_width = 100 } }) end, desc = "Prev Diagnostic" },
+			{ "]g", function() vim.diagnostic.jump({ count = 1, on_jump = open_diagnostic_float }) end, desc = "Next Diagnostic" },
+			{ "[g", function() vim.diagnostic.jump({ count = -1, on_jump = open_diagnostic_float }) end, desc = "Prev Diagnostic" },
 
 			-- Code actions
 			{ "<leader>ca", vim.lsp.buf.code_action, desc = "Code Action", mode = { "n", "v" } },

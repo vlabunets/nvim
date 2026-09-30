@@ -160,8 +160,8 @@ EcoVim = {
 
 	-- LSP Configuration (add servers in user.lua)
 	lsp = {
-		-- TypeScript LSP server: "tsgo" (experimental, fast) or "ts_ls" (stable, traditional)
-		typescript_server = "tsgo",
+		-- TypeScript LSP server: "ts_ls" (stable, default) or "tsgo" (experimental, fast)
+		typescript_server = "ts_ls",
 		ensure_installed = {},
 		exclude = { "copilot" },
 		servers = {},

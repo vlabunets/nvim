@@ -10,3 +10,4 @@ require('config.keymappings')
 require('config.autocmds')
 
 require('internal.cursorword')
+require('internal.statusline').setup()

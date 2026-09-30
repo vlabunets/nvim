@@ -59,11 +59,11 @@
 -- Disable inlay hints (default: true)
 -- EcoVim.lsp.inlay_hints = false
 
--- Switch TypeScript server (default: "tsgo")
--- "tsgo" is Microsoft's native Go-based TS server (fast, recommended)
+-- Switch TypeScript server (default: "ts_ls")
+-- "tsgo" is Microsoft's native Go-based TS server (fast, experimental)
 -- "ts_ls" is the classic TypeScript language server
 -- The inactive server is automatically excluded from auto-enable
--- EcoVim.lsp.typescript_server = "ts_ls"
+-- EcoVim.lsp.typescript_server = "tsgo"
 
 -- Add custom LSP server configuration
 -- See: https://neovim.io/doc/user/lsp.html

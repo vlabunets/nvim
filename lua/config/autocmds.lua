@@ -1,7 +1,7 @@
 -- Highlight on yank
 local yank_group = vim.api.nvim_create_augroup("ecovim_yank_highlight", {})
 vim.api.nvim_create_autocmd("TextYankPost",
-  { group = yank_group, callback = function() vim.highlight.on_yank({ higroup = 'IncSearch', timeout = 100 }) end })
+  { group = yank_group, callback = function() vim.hl.on_yank({ higroup = 'IncSearch', timeout = 100 }) end })
 -- Disable diagnostics in node_modules (0 is current buffer only)
 local buf_settings_group = vim.api.nvim_create_augroup("ecovim_buf_settings", {})
 vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, { group = buf_settings_group, pattern = "*/node_modules/*", command = "lua vim.diagnostic.enable(false, { bufnr = 0 })" })

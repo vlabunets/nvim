@@ -1,9 +1,7 @@
 -- Configure ts_ls (TypeScript Language Server) with Neovim 0.11 API
 -- This is the stable, traditional TypeScript server (typescript-language-server)
--- To use this instead of tsgo, set EcoVim.lsp.typescript_server = "ts_ls" in user.lua
-local filter = require("config.lsp.utils.filter").filter
-local filterReactDTS = require("config.lsp.utils.filterReactDTS").filterReactDTS
-
+-- Selected via EcoVim.lsp.typescript_server = "ts_ls" (the default)
+-- Note: `gd` skips .d.ts results (see config/lsp/utils/definition.lua)
 vim.lsp.config.ts_ls = {
 	filetypes = {
 		"javascript",
@@ -12,16 +10,6 @@ vim.lsp.config.ts_ls = {
 		"typescript",
 		"typescriptreact",
 		"typescript.tsx",
-	},
-
-	handlers = {
-		["textDocument/definition"] = function(err, result, method, ...)
-			if vim.islist(result) and #result > 1 then
-				local filtered_result = filter(result, filterReactDTS)
-				return vim.lsp.handlers["textDocument/definition"](err, filtered_result, method, ...)
-			end
-			vim.lsp.handlers["textDocument/definition"](err, result, method, ...)
-		end,
 	},
 
 	on_attach = function(client, bufnr)

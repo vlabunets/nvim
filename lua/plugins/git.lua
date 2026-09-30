@@ -121,7 +121,7 @@ return {
 	},
 
 	{
-		"dlyongemallo/diffview.nvim",
+		"dlyongemallo/diffview-plus.nvim",
 		lazy = false,
 		enabled = true,
 		-- event = "BufRead",

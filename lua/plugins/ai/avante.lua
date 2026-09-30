@@ -1,6 +1,6 @@
 return {
 	{
-		"yetone/avante.nvim",
+		"avante-corp/avante.nvim",
 		enabled = EcoVim.plugins.ai.avante.enabled,
 		lazy = false,
 		version = false,
@@ -54,6 +54,9 @@ return {
 			"MunifTanjim/nui.nvim",
 			"nvim-tree/nvim-web-devicons",
 			"zbirenbaum/copilot.lua",
+			-- avante's rockspec deps, installed as plain plugins since lazy's luarocks support is disabled
+			"ColinKennedy/mega.cmdparse",
+			"ColinKennedy/mega.logging",
 			{
 				-- support for image pasting
 				"HakonHarnes/img-clip.nvim",
