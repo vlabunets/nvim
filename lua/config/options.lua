@@ -91,7 +91,7 @@ if vim.g.neovide then
   vim.g.neovide_underline_stroke_scale = 0.5
   vim.g.neovide_window_blurred = true
 
-  vim.keymap.set({ 'n', 'v' }, '<D-c>', '"+y')  -- Copy
-  vim.keymap.set({ 'n', 'v' }, '<D-v>', '"*p')  -- Paste normal/visual mode
-  vim.keymap.set({ 'c', 'i' }, '<D-v>', '<C-R>+') -- Paste command/insert mode
+  vim.keymap.set({ 'n', 'v' }, '<D-c>', '"+y', { desc = "Copy to clipboard" })
+  vim.keymap.set({ 'n', 'v' }, '<D-v>', '"*p', { desc = "Paste from clipboard" })
+  vim.keymap.set({ 'c', 'i' }, '<D-v>', '<C-R>+', { desc = "Paste from clipboard" })
 end

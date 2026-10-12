@@ -18,11 +18,12 @@ tokyonight.setup({
   terminal_colors = true,                        -- Configure the colors used when opening a `:terminal` in Neovim
   styles = {
     -- Style to be applied to different syntax groups
-    -- Value is any valid attr-list value `:help attr-list`
-    comments = "NONE",
-    keywords = "italic",
-    functions = "NONE",
-    variables = "NONE",
+    -- Value is a table of highlight attributes (`:help nvim_set_hl`), e.g. { italic = true }.
+    -- Strings like "italic" are not accepted and fail as soon as the theme isn't loaded from cache.
+    comments = {},
+    keywords = { italic = true },
+    functions = {},
+    variables = {},
     -- Background styles. Can be "dark", "transparent" or "normal"
     sidebars = vim.g.neovide and "dark" or "dark",                 -- style for sidebars, see below
     floats = vim.g.neovide and "dark" or "dark",                   -- style for floating windows
@@ -82,6 +83,7 @@ tokyonight.setup({
   end,
 })
 
+-- EcoVim accent groups and links: the dashboard, bufferline and winbar use these with every theme
 local highlights = {
   -- Ecovim Colors
   EcovimPrimary                 = { fg = "#488dff" },
@@ -91,7 +93,7 @@ local highlights = {
   EcovimHeader                  = { bold = true, fg = "#488DFF" },
   EcovimHeaderInfo              = { bold = true, fg = "#FFA630" },
   EcovimFooter                  = { bold = true, fg = "#FFA630" },
-  EcovimExplorerTitle            = { bold = true, fg = "#FFA630", bg = "#16161e" },
+  EcovimExplorerTitle            = { bold = true, fg = "#FFA630" },
   -- Lines
   CursorLineNR                  = { link = "EcovimSecondary" },
   LineNr                        = { link = "Comment" },
@@ -103,18 +105,25 @@ local highlights = {
   BqfPreviewBorder              = { link = "FloatBorder" },
   BufferInactiveIndex           = { link = "BufferInactive" },
   LspInfoBorder                 = { link = "FloatBorder" },
-  VertSplit                     = { bg = "NONE", fg = "#16161E" },
-  WinSeparator                  = { bg = "NONE", fg = "#16161E" },
   -- Misc
   GitSignsCurrentLineBlame      = { link = "Comment" },
   -- StatusLine                    = { bg = "None" },
   -- StatusLineNC                  = { bg = "None" },
+  BufferOffset                  = { link = "EcovimSecondary" },
+  LspInlayHint                  = { link = "LspCodeLens" },
+  SnacksPickerMatch             = { link = "Boolean" },
+}
+
+-- Overrides tuned to tokyonight's palette: only applied while a tokyonight scheme is active,
+-- otherwise they would paint tokyonight colors over another theme
+local tokyonight_highlights = {
+  EcovimExplorerTitle            = { bold = true, fg = "#FFA630", bg = "#16161e" },
+  VertSplit                     = { bg = "NONE", fg = "#16161E" },
+  WinSeparator                  = { bg = "NONE", fg = "#16161E" },
   rainbowcol1                   = { fg = c.blue, ctermfg = 9 },
   TSRainbowRed                  = { fg = c.blue, ctermfg = 9 },
   RainbowDelimiterRed           = { fg = c.blue, ctermfg = 9 },
   Boolean                       = { fg = "#F7768E" },
-  BufferOffset                  = { link = "EcovimSecondary" },
-  LspInlayHint                  = { link = "LspCodeLens" },
   -- Bufferline
   BufferLineFill                = { bg = "#16161E", fg = "#565F89" },
   BufferLineTabSelected         = { bg = "#16161E", fg = "#7AA2F7" },
@@ -141,13 +150,7 @@ local highlights = {
   CmpItemAbbrMatch              = { fg   = "#569CD6", bg = "NONE" },
   CmpItemAbbrMatchFuzzy         = { fg   = "#569CD6", bg = "NONE" },
   CmpBorderedWindow_FloatBorder = { fg   = c.blue0 },
-  SnacksPickerMatch             = { link = "Boolean" },
 }
-
-
-for group, hl in pairs(highlights) do
-  vim.api.nvim_set_hl(0, group, hl)
-end
 
 local neovide_highlights = {
   -- VertSplit                   = { bg = "#16161E", fg = "#1A1B26" },
@@ -162,11 +165,27 @@ local neovide_highlights = {
   -- BufferLineSeparatorSelected = { bg = "#1A1B26", fg = "#1A1B26" },
 }
 
-if vim.g.neovide then
-  for group, hl in pairs(neovide_highlights) do
-    vim.api.nvim_set_hl(0, group, hl)
+local function apply_highlights()
+  local function set(groups)
+    for group, hl in pairs(groups) do
+      vim.api.nvim_set_hl(0, group, hl)
+    end
+  end
+  set(highlights)
+  if (vim.g.colors_name or ""):match("^tokyonight") then
+    set(tokyonight_highlights)
+  end
+  if vim.g.neovide then
+    set(neovide_highlights)
   end
 end
+
+apply_highlights()
+-- A :colorscheme switch clears custom highlights; re-apply the ones that fit the new theme
+vim.api.nvim_create_autocmd("ColorScheme", {
+  group = vim.api.nvim_create_augroup("ecovim_colorscheme_highlights", { clear = true }),
+  callback = apply_highlights,
+})
 
 -- local fixBufferLineSeparator = function()
 --   vim.api.nvim_set_hl(0, "BufferLineOffsetSeparator", vim.api.nvim_get_hl_by_name('WinSeparator', true))

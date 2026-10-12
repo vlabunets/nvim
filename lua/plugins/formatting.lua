@@ -33,6 +33,11 @@ return {
           stop_after_first = true,
         },
         formatters_by_ft = formatters_by_ft,
+        formatters = {
+          -- Only use biome in projects that configure it (biome.json/.jsonc). Otherwise it would win
+          -- over prettier (stop_after_first) and format with its own defaults, ignoring .prettierrc.
+          biome = { require_cwd = true },
+        },
       })
 
       vim.keymap.set({ "n" }, "<leader>f", function()

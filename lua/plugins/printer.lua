@@ -38,7 +38,7 @@ return {
     keys = {
       -- You can use use '<Plug>printer_print' to call the pluging inside more advanced keymaps
       -- for example a keymap that always adds a prnt statement based on 'iw'
-      { "gP", "<Plug>(printer_print)iw", mode = "n" }
+      { "gP", "<Plug>(printer_print)iw", mode = "n", desc = "Print word under cursor" }
     }
   },
 }

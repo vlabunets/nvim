@@ -72,7 +72,7 @@ return {
 							gs.next_hunk()
 						end)
 						return "<Ignore>"
-					end, { expr = true })
+					end, { expr = true, desc = "Next hunk" })
 
 					map("n", "[c", function()
 						if vim.wo.diff then
@@ -82,7 +82,7 @@ return {
 							gs.prev_hunk()
 						end)
 						return "<Ignore>"
-					end, { expr = true })
+					end, { expr = true, desc = "Previous hunk" })
 
 					-- Actions
 					map("n", "<leader>ghs", gs.stage_hunk, { desc = "stage hunk" })
@@ -104,7 +104,7 @@ return {
 					map("n", "<leader>ght", gs.toggle_deleted, { desc = "toggle deleted" })
 
 					-- Text object
-					map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>")
+					map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", { desc = "Inner hunk" })
 				end,
 			})
 		end,

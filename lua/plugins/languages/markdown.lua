@@ -2,7 +2,6 @@ return {
   { "dhruvasagar/vim-table-mode", ft = { "markdown" } },
   {
     "MeanderingProgrammer/render-markdown.nvim",
-    commit = "a2c2493c21cf61e5554ee8bc83da75bd695921da",
     ft = { "markdown", "Avante", "copilot-chat", "codecompanion", "opencode_output" },
     opts = {
       render_modes = true,

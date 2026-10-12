@@ -34,8 +34,11 @@ return {
 			})
 
 			-- Determine TypeScript server based on user preference
+			-- ts_server is the Mason package name; ts_config is the lspconfig config to enable.
+			-- lspconfig renamed "tsgo" to "tsc" (the old name is a deprecated alias that warns on
+			-- every start), so tsgo is enabled through "tsc", which finds Mason's tsgo binary on PATH.
 			local ts_server = EcoVim.lsp.typescript_server or "ts_ls"
-			local ts_exclude = ts_server == "tsgo" and "ts_ls" or "tsgo"
+			local ts_config = ts_server == "tsgo" and "tsc" or "ts_ls"
 
 			-- Set up Mason-lspconfig
 			local default_servers = {
@@ -67,8 +70,8 @@ return {
 			-- Merge default servers with user custom servers
 			local ensure_installed = vim.list_extend(default_servers, EcoVim.lsp.ensure_installed or {})
 
-			-- Build exclude list: always exclude copilot + the unused TypeScript server
-			local exclude = vim.list_extend({ ts_exclude, "copilot" }, EcoVim.lsp.exclude or {})
+			-- Build exclude list: always exclude copilot + both TypeScript servers (enabled explicitly below)
+			local exclude = vim.list_extend({ "ts_ls", "tsgo", "copilot" }, EcoVim.lsp.exclude or {})
 
 			require("mason-lspconfig").setup({
 				ensure_installed = ensure_installed,
@@ -77,6 +80,11 @@ return {
 					exclude = exclude,
 				},
 			})
+
+			-- Enable only the selected TypeScript server, unless the user excluded it
+			if not vim.tbl_contains(EcoVim.lsp.exclude or {}, ts_server) then
+				vim.lsp.enable(ts_config)
+			end
 
 			-- Load LSP configurations using vim.lsp.config API
 			require("config.lsp")

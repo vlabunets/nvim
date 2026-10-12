@@ -28,8 +28,8 @@ if wk_present then
   vim.api.nvim_create_autocmd("FileType", { group = wk_group, pattern = "spectre_panel",
     callback = function() pwk.attach_spectre(0) end })
 
-  -- Attach TypeScript keybindings when tsgo or ts_ls connects
-  local ts_servers = { tsgo = true, ts_ls = true }
+  -- Attach TypeScript keybindings when tsgo (lspconfig "tsc") or ts_ls connects
+  local ts_servers = { tsc = true, tsgo = true, ts_ls = true }
   vim.api.nvim_create_autocmd("LspAttach", {
     group = wk_group,
     callback = function(args)
@@ -49,7 +49,7 @@ vim.api.nvim_create_autocmd(
     group = lazy_group,
     pattern = { "*.test.ts", "*.test.tsx", "*.spec.ts", "*.spec.tsx", "*.test.js", "*.spec.js" },
     callback = function()
-      require("lazy.loader").load({
+      require("lazy").load({
         plugins = { "neotest", }
       })
     end

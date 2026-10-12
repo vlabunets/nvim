@@ -18,43 +18,7 @@ vim.lsp.config.ts_ls = {
 		end
 	end,
 
-	settings = {
-		typescript = {
-			inlayHints = {
-				includeInlayParameterNameHints = "all",
-				includeInlayParameterNameHintsWhenArgumentMatchesName = true,
-				includeInlayFunctionParameterTypeHints = true,
-				includeInlayVariableTypeHints = false,
-				includeInlayVariableTypeHintsWhenTypeMatchesName = false,
-				includeInlayPropertyDeclarationTypeHints = false,
-				includeInlayFunctionLikeReturnTypeHints = false,
-				includeInlayEnumMemberValueHints = true,
-			},
-			format = {
-				indentSize = vim.o.shiftwidth,
-				convertTabsToSpaces = vim.o.expandtab,
-				tabSize = vim.o.tabstop,
-			},
-		},
-		javascript = {
-			inlayHints = {
-				includeInlayParameterNameHints = "all",
-				includeInlayParameterNameHintsWhenArgumentMatchesName = true,
-				includeInlayFunctionParameterTypeHints = true,
-				includeInlayVariableTypeHints = false,
-				includeInlayVariableTypeHintsWhenTypeMatchesName = false,
-				includeInlayPropertyDeclarationTypeHints = false,
-				includeInlayFunctionLikeReturnTypeHints = false,
-				includeInlayEnumMemberValueHints = true,
-			},
-			format = {
-				indentSize = vim.o.shiftwidth,
-				convertTabsToSpaces = vim.o.expandtab,
-				tabSize = vim.o.tabstop,
-			},
-		},
-		completions = {
-			completeFunctionCalls = true,
-		},
-	},
+	-- Inlay hints and completion preferences are shared with tsgo: edit them in
+	-- config/lsp/utils/typescript_preferences.lua
+	settings = require("config.lsp.utils.typescript_preferences").ts_ls_settings(),
 }

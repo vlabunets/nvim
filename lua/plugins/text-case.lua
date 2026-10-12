@@ -60,6 +60,6 @@ return {
     setup_textcase_keymaps('<space>', 'to_phrase_case', 'phrase case', 'to phrase case')
     end,
     cmd = { "TextCaseOpenTelescope", "Subs" },
-    keys = { "gu", "guo" }
+    keys = { { "gu", desc = "Text case" }, { "guo", desc = "Text case (operator)" } }
   },
 }

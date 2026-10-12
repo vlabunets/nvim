@@ -1,6 +1,4 @@
 -- Main LSP configuration setup using the new vim.lsp.config API
-local ufo_utils = require("utils._ufo")
-local ufo_config_handler = ufo_utils.handler
 
 -- Setup default configs for all LSP clients
 vim.lsp.config('*', {
@@ -55,15 +53,8 @@ require("config.lsp.servers.yamlls")
 -- ts_ls is the default (stable); tsgo is the experimental, faster alternative
 if EcoVim.lsp.typescript_server == "ts_ls" then
     require("config.lsp.servers.ts_ls")
-end
-
--- Setup UFO for folding
-local ufo_ok, ufo = pcall(require, "ufo")
-if ufo_ok then
-    ufo.setup({
-        fold_virt_text_handler = ufo_config_handler,
-        close_fold_kinds_for_ft = { default = { "imports" } },
-    })
+elseif EcoVim.lsp.typescript_server == "tsgo" then
+    require("config.lsp.servers.tsc")
 end
 
 -- Note: Server enabling is now handled by mason-lspconfig's automatic_enable feature

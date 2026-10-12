@@ -18,7 +18,7 @@ wk.setup {
       motions = false,   -- adds help for motions text_objects = false, -- help for text objects triggered after entering an operator
       windows = false,   -- default bindings on <c-w>
       nav = false,       -- misc bindings to work with windows
-      z = false,         -- bindings for folds, spelling and others prefixed with z
+      z = true,          -- bindings for folds, spelling and others prefixed with z
       g = false,         -- bindings for prefixed with g
     },
   },
@@ -42,7 +42,7 @@ wk.setup {
 
 -- ignore
 wk.add({
-  { "<leader><leader>", hidden = true },
+  { "<leader><leader>", group = "Swap buffer" },
   { "<leader>1",        hidden = true },
   { "<leader>2",        hidden = true },
   { "<leader>3",        hidden = true },
@@ -79,6 +79,8 @@ wk.add({
   { "<leader>x", desc = "delete cursor" },
   { "<leader>A", desc = "align cursors" },
   { "<leader>gv", desc = "restore cursors" },
+  { "gs", desc = "switch value (true/false, ...)" }, -- switch.vim default mapping
+  { "zi", desc = "Toggle all folds on/off (keeps fold state)" }, -- clarify built-in 'foldenable' toggle
 })
 
 wk.add({
