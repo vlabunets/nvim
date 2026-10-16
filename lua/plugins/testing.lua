@@ -23,18 +23,40 @@ return {
       "nvim-neotest/nvim-nio",
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
-      "nvim-neotest/neotest-jest",
+      "marilari88/neotest-vitest",
     },
     config = function()
+      -- Angular projects using @angular/build:unit-test must run specs through `ng test`
+      -- (it compiles the app and sets up TestBed); bin/ng-vitest translates the adapter's vitest flags
+      local ng_vitest = vim.fn.stdpath("config") .. "/bin/ng-vitest"
+      local function uses_angular_unit_test(path)
+        local root = vim.fs.root(path, "angular.json")
+        if not root then
+          return nil
+        end
+        local ok, lines = pcall(vim.fn.readfile, root .. "/angular.json")
+        return ok and table.concat(lines, "\n"):find("@angular/build:unit-test", 1, true) and root or nil
+      end
+
       require('neotest').setup {
         adapters = {
-          require("neotest-jest")({
-            jestCommand = "yarn test",
-            env = { CI = true },
+          require("neotest-vitest")({
+            vitestCommand = function(path)
+              if uses_angular_unit_test(path) then
+                return ng_vitest
+              end
+              local root = vim.fs.root(path, "node_modules")
+              return root and (root .. "/node_modules/.bin/vitest") or "vitest"
+            end,
             cwd = function(path)
-              return vim.fn.getcwd()
+              return uses_angular_unit_test(path) or vim.fs.root(path, { "vitest.config.ts", "vitest.config.js", "package.json" })
             end,
           }),
+        },
+        -- Only parse spec files that are open; scanning a whole large project (hundreds of specs plus
+        -- build/coverage dirs) at startup delays every run by minutes
+        discovery = {
+          enabled = false,
         },
         diagnostic = {
           enabled = false

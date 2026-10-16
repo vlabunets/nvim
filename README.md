@@ -41,7 +41,8 @@
 - [blink.cmp](https://github.com/Saghen/blink.cmp) - completion engine
 - [boundary.nvim](https://github.com/kenzo-pj/boundary.nvim) - RSC `'use client'` markers
 - NPM package info in package.json
-- [Jest](https://github.com/facebook/jest) testing & coverage
+- [Vitest](https://vitest.dev/) testing via [neotest](https://github.com/nvim-neotest/neotest) (Angular `ng test` aware) & coverage
+- SCSS/Sass navigation across `@use`/`@forward` ([Some Sass](https://github.com/wkillerud/some-sass))
 - [treesj](https://github.com/Wansmer/treesj) - smart split/join lines
 
 </td>
@@ -77,7 +78,7 @@
 
 ### 🌳 Git Integration
 - [Lazygit](https://github.com/jesseduffield/lazygit) terminal UI
-- [gitsigns](https://github.com/lewis6991/gitsigns.nvim) - inline diffs
+- [gitsigns](https://github.com/lewis6991/gitsigns.nvim) - inline diffs (optionally against the last commit)
 - [diffview](https://github.com/sindrets/diffview.nvim) - diff viewer
 - [octo.nvim](https://github.com/pwntester/octo.nvim) - GitHub PRs & issues
 - Custom git blame
@@ -199,6 +200,13 @@ EcoVim.formatters = {
   typescript = { "prettierd" },
 }
 
+-- Override linters (nvim-lint names, e.g. "biomejs", not "biome").
+-- eslint_d and biomejs only run when the project has an eslint / biome config.
+EcoVim.linters = {
+  typescript = { "eslint_d", "biomejs" },
+  html = { "eslint_d" }, -- Angular templates
+}
+
 -- Add custom autocmds
 EcoVim.autocmds.auto_save = {
   event = "FocusLost",
@@ -222,7 +230,7 @@ EcoVim.plugins.projects.dev = { "~/Projects", "~/Work" }
 -- Toggle features on/off
 EcoVim.lsp.format_on_save = true        -- Enable auto-format on save
 EcoVim.lsp.inlay_hints = false           -- Disable inlay hints
-EcoVim.lsp.typescript_server = "ts_ls"   -- Switch from tsgo to ts_ls
+EcoVim.lsp.typescript_server = "tsgo"    -- Switch from ts_ls to tsgo
 EcoVim.plugins.completion.ghost_text = false  -- Disable ghost text
 EcoVim.plugins.git.blame_line = false    -- Disable inline git blame
 
@@ -240,12 +248,12 @@ vim.opt.shiftwidth = 4
 | `ui.float.border` | string | `"rounded"` | Border style: "rounded", "single", "double", "shadow", "none" |
 | `lsp.ensure_installed` | table | `{}` | Additional LSP servers to install via Mason |
 | `lsp.exclude` | table | `{ "copilot" }` | LSP servers to not auto-enable |
-| `lsp.typescript_server` | string | `"tsgo"` | TypeScript server: `"tsgo"` (fast, native) or `"ts_ls"` (classic) |
+| `lsp.typescript_server` | string | `"ts_ls"` | TypeScript server: `"ts_ls"` (classic) or `"tsgo"` (fast, native) |
 | `lsp.servers` | table | `{}` | Custom LSP server configurations |
 | `lsp.format_on_save` | boolean | `false` | Auto-format on save (toggle at runtime with `:LspToggleAutoFormat`) |
 | `lsp.inlay_hints` | boolean | `true` | Show inlay hints from LSP servers |
 | `formatters` | table | `{}` | Override formatters per filetype |
-| `linters` | table | `{}` | Override linters per filetype |
+| `linters` | table | `{}` | Override linters per filetype (nvim-lint names, e.g. `biomejs`) |
 | `autocmds` | table | | Add custom autocmds |
 | `plugin_overrides` | table | | Override any plugin configuration |
 | `plugins.ai.*.enabled` | boolean | varies | Enable/disable AI plugins (avante, copilot, opencode) |
@@ -351,12 +359,12 @@ The Snacks explorer uses its own keybindings when focused. Press `?` inside the 
 | `SPC c R`              | Rename file                             |
 | `SPC c d`              | Diagnostics list (Snacks picker)        |
 | `SPC c t`              | Toggle format on save                   |
-| `SPC c u`              | Toggle symbol usage                     |
+| `SPC c u`              | Toggle symbol usage (non-TS buffers)    |
 | `SPC c m`              | Mason LSP manager                       |
-| `SPC c l i`            | LSP Info                                |
-| `SPC c l r`            | LSP Restart                             |
-| `SPC c l s`            | LSP Stop                                |
-| `SPC c l S`            | LSP Start                               |
+| `SPC c l i`            | LSP Info (`:checkhealth vim.lsp`)       |
+| `SPC c l r`            | LSP Restart (`:lsp restart`)            |
+| `SPC c l s`            | LSP Stop (`:lsp stop`)                  |
+| `SPC c l S`            | LSP Start (`:lsp enable`)               |
 | `SPC s s`              | Document symbols                        |
 | `SPC s S`              | Workspace symbols                       |
 
@@ -375,7 +383,8 @@ These keybindings are available in TypeScript/JavaScript buffers:
 | `SPC c i`    | Add missing imports                  |
 | `SPC c o`    | Organize imports                     |
 | `SPC c s`    | Sort imports                         |
-| `SPC c u`    | Remove unused imports                |
+| `SPC c u`    | Remove unused code (whole file)      |
+| `SPC c F`    | Fix all (TS fixable issues)          |
 | `SPC c v`    | Show Tailwind CSS values             |
 | `<C-a>`      | Smart increment (numbers, booleans, dates, const/let, &&/\|\|, etc.) |
 | `<C-x>`      | Smart decrement                      |
@@ -392,6 +401,8 @@ These keybindings are available in TypeScript/JavaScript buffers:
 | `SPC f`            | Format file (conform.nvim)               |
 | `SPC f` (visual)   | Format selection                         |
 | `SPC l`            | Lint file (nvim-lint)                    |
+
+SCSS and Less are formatted with prettier (project `.prettierrc` is respected). `eslint_d` and `biomejs` lint only when the project has an eslint / biome config; Angular templates (`*.html`) are linted with eslint.
 
 </details>
 
@@ -418,14 +429,15 @@ These keybindings are available in TypeScript/JavaScript buffers:
 | `]c`         | Next change hunk                                                        |
 | `[c`         | Previous change hunk                                                    |
 | **Hunk actions** |                                                                     |
-| `SPC g h s`  | Stage hunk                                                              |
-| `SPC g h r`  | Reset hunk                                                              |
+| `SPC g h s`  | Stage hunk (visual: selected lines)                                     |
+| `SPC g h r`  | Reset hunk (visual: selected lines)                                     |
 | `SPC g h S`  | Stage buffer                                                            |
 | `SPC g h R`  | Reset buffer                                                            |
 | `SPC g h u`  | Undo stage hunk                                                         |
 | `SPC g h p`  | Preview hunk                                                            |
 | `SPC g h d`  | Diff hunk                                                               |
 | `SPC g h t`  | Toggle deleted                                                          |
+| `SPC g h b`  | Toggle signs base: index / last commit (`HEAD~1`)                       |
 | **Git log** |                                                                          |
 | `SPC g l a`  | Lazygit log (cwd)                                                       |
 | `SPC g l c`  | Lazygit current file history                                            |
@@ -498,16 +510,16 @@ These keybindings are available in TypeScript/JavaScript buffers:
 | `SPC d s`    | Float scopes                |
 | `SPC d r`    | Float REPL                  |
 
-Pre-configured for Chrome, Node.js (pwa-node), Next.js server-side, Jest, Vitest, and Deno.
+Pre-configured for Chrome, Node.js (pwa-node), Next.js server-side, Vitest, and Deno.
 
 </details>
 
 <details>
-<summary>Testing (Jest / Neotest)</summary>
+<summary>Testing (Vitest / Neotest)</summary>
 
-### Testing (Jest / Neotest)
+### Testing (Vitest / Neotest)
 
-Available in TypeScript/JavaScript buffers:
+Available in test files (`*.spec.*` / `*.test.*`). Uses [neotest-vitest](https://github.com/marilari88/neotest-vitest); in Angular projects that use `@angular/build:unit-test`, tests run through `ng test` (via `bin/ng-vitest`) so TestBed is set up. Tests run against the saved file, and only open spec files are discovered.
 
 | Key Bindings | Description             |
 |--------------|-------------------------|
@@ -568,11 +580,12 @@ Using [jake-stewart/multicursor.nvim](https://github.com/jake-stewart/multicurso
 | `SPC v`               | Split right                  |
 | `SPC V`               | Split below                  |
 | `<C-h/j/k/l>`        | Move between splits          |
-| `<A-h/j/k/l>`        | Resize splits                |
+| `<A-h/j/k/l>`        | Resize splits (macOS terminals: enable Option as Alt) |
 | `SPC SPC h/j/k/l`    | Swap buffer between splits   |
 | `SPC =`               | Resize +5                    |
 | `SPC -`               | Resize -5                    |
 | `<C-\>`              | Previous split               |
+| `SPC Z`               | Zoom current split           |
 
 </details>
 
@@ -653,7 +666,7 @@ Available in `package.json` buffers:
 | `<D-d>` / `<D-u>`  | Half-page scroll down/up (macOS Cmd+D/U)                                        |
 | `<D-i>`            | Jump forward in jumplist (macOS Cmd+I)                                           |
 | `<C-o>`            | Jump to previous position in jumplist                                            |
-| `<Tab>` / `<S-Tab>` | Cycle through buffers                                                           |
+| `]]` / `[[`        | Next / previous buffer (`<S-Tab>` also goes back)                                |
 | `<BS>`             | Jump to first non-blank character                                                |
 | `H`                | Jump to first non-blank character                                                |
 | `v <CR>`           | Smartly select next treesitter subject (repeat to expand)                        |
@@ -679,10 +692,10 @@ Available in `package.json` buffers:
 | `SPC / c`          | Open config                                                                      |
 | `SPC / i`          | Manage plugins (Lazy)                                                            |
 | `SPC / u`          | Update plugins                                                                   |
-| `SPC a n`          | Toggle line numbers                                                              |
-| `SPC a r`          | Toggle relative numbers                                                          |
+| `SPC a l l`        | Toggle line numbers                                                              |
+| `SPC a l r`        | Toggle relative numbers                                                          |
 | **Treesitter textobjects** |                                                                          |
-| `]]` / `[[`        | Next / previous JSX element                                                      |
+| `]}` / `[{`        | Next / previous JSX element                                                      |
 | `]f` / `[f`        | Next / previous function start                                                   |
 | `]m` / `[m`        | Next / previous class start                                                      |
 | `af` / `if`        | Select around / inside function                                                  |

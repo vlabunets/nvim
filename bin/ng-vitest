@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Run neotest-vitest's `vitest` command through Angular's unit-test builder (`ng test`).
+# Angular projects that use @angular/build:unit-test can't run plain `vitest`: the builder compiles
+# the app and initializes TestBed first. This translates the adapter's vitest flags to `ng test` ones.
+# Usage (from lua/plugins/testing.lua): ng-vitest [vitest args...] <spec file>
+set -euo pipefail
+
+args=(test --watch=false --coverage=false)
+reporters=()
+output_file=""
+
+for arg in "$@"; do
+  case "$arg" in
+  --config=*) ;; # ng test reads runnerConfig from angular.json
+  --reporter=*) reporters+=("${arg#--reporter=}") ;;
+  --outputFile=*) output_file="${arg#--outputFile=}" ;;
+  --testNamePattern=.\*) ;; # whole file: no filter
+  --testNamePattern=*) args+=(--filter "${arg#--testNamePattern=}") ;;
+  --watch* | -w) ;; # always --watch=false
+  -*) args+=("$arg") ;;
+  *) args+=(--include "$arg") ;;
+  esac
+done
+
+# --output-file applies to the first reporter only, so json must come first
+args+=(--reporters json)
+for r in "${reporters[@]}"; do
+  [[ "$r" != json ]] && args+=(--reporters "$r")
+done
+[[ -n "$output_file" ]] && args+=(--output-file "$output_file")
+
+exec ./node_modules/.bin/ng "${args[@]}"
