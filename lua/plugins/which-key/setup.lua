@@ -163,23 +163,34 @@ local function attach_markdown(bufnr)
   })
 end
 
+-- Run a whole-file TypeScript source action.
+-- * The server builds removeUnused/addMissingImports/fixAll edits from the diagnostics sent in the
+--   context, which must be LSP-shaped (with `range`), not vim.Diagnostic.
+-- * Only take actions from the TS server: eslint labels its own fixes with the requested kind, which
+--   would turn `apply` into a picker.
+local ts_clients = { ts_ls = true, tsc = true, tsgo = true }
+local function source_action(kind)
+  return function()
+    vim.lsp.buf.code_action({
+      context = { only = { kind }, diagnostics = vim.lsp.diagnostic.from(vim.diagnostic.get(0)) },
+      filter = function(_, client_id)
+        local client = vim.lsp.get_client_by_id(client_id)
+        return client ~= nil and ts_clients[client.name] == true
+      end,
+      apply = true,
+    })
+  end
+end
+
 local function attach_typescript(bufnr)
   wk.add({
     { buffer = bufnr },
     { "<leader>c",   group = "LSP", },
     { "<leader>ce",  "<cmd>TSC<CR>",                      desc = "workspace errors (TSC)" },
-    { "<leader>co",  function()
-      vim.lsp.buf.code_action({ context = { only = { "source.organizeImports" }, diagnostics = vim.diagnostic.get(0) }, apply = true })
-    end, desc = "organize imports" },
-    { "<leader>ci",  function()
-      vim.lsp.buf.code_action({ context = { only = { "source.addMissingImports" }, diagnostics = vim.diagnostic.get(0) }, apply = true })
-    end, desc = "import all" },
-    { "<leader>cu",  function()
-      vim.lsp.buf.code_action({ context = { only = { "source.removeUnused" }, diagnostics = vim.diagnostic.get(0) }, apply = true })
-    end, desc = "remove unused" },
-    { "<leader>cF",  function()
-      vim.lsp.buf.code_action({ context = { only = { "source.fixAll" }, diagnostics = vim.diagnostic.get(0) }, apply = true })
-    end, desc = "fix all" },
+    { "<leader>co",  source_action("source.organizeImports"),  desc = "organize imports" },
+    { "<leader>ci",  source_action("source.addMissingImports"), desc = "import all" },
+    { "<leader>cu",  source_action("source.removeUnused"),     desc = "remove unused" },
+    { "<leader>cF",  source_action("source.fixAll"),           desc = "fix all" },
     { "<leader>cR",  function() Snacks.rename.rename_file() end, desc = "rename file" },
   })
 end
@@ -198,10 +209,10 @@ local function attach_npm(bufnr)
   })
 end
 
-local function attach_jest(bufnr)
+local function attach_tests(bufnr)
   wk.add({
     { buffer = bufnr },
-    { "<leader>j",   group = "Jest", },
+    { "<leader>j",   group = "Test", },
     { "<leader>jf",  "<cmd>lua require('neotest').run.run(vim.fn.expand('%'))<CR>",   desc = "run current file" },
     { "<leader>ji",  "<cmd>lua require('neotest').summary.toggle()<CR>",              desc = "toggle info panel" },
     { "<leader>jj",  "<cmd>lua require('neotest').run.run()<CR>",                     desc = "run nearest test" },
@@ -225,6 +236,6 @@ return {
   attach_markdown = attach_markdown,
   attach_typescript = attach_typescript,
   attach_npm = attach_npm,
-  attach_jest = attach_jest,
+  attach_tests = attach_tests,
   attach_spectre = attach_spectre,
 }

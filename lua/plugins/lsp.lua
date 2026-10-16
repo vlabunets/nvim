@@ -99,10 +99,11 @@ return {
 		keys = {
 			-- Mason
 			{ "<leader>cm", "<cmd>Mason<CR>", desc = "Mason LSP manager" },
-			{ "<leader>cli", "<cmd>LspInfo<CR>", desc = "LSP Info" },
-			{ "<leader>clr", "<cmd>LspRestart<CR>", desc = "LSP Restart" },
-			{ "<leader>cls", "<cmd>LspStop<CR>", desc = "LSP Stop" },
-			{ "<leader>clS", "<cmd>LspStart<CR>", desc = "LSP Start" },
+			-- Nvim 0.12 built-in :lsp command; lspconfig no longer defines :Lsp* when it exists
+			{ "<leader>cli", "<cmd>checkhealth vim.lsp<CR>", desc = "LSP Info" },
+			{ "<leader>clr", "<cmd>lsp restart<CR>", desc = "LSP Restart" },
+			{ "<leader>cls", "<cmd>lsp stop<CR>", desc = "LSP Stop" },
+			{ "<leader>clS", "<cmd>lsp enable<CR>", desc = "LSP Start" },
 
 			-- Navigation
 			{ "gd", function() require("config.lsp.utils.definition").goto_definition() end, desc = "Goto Definition" },
