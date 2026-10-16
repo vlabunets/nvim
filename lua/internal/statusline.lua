@@ -43,6 +43,8 @@ local colors = {
   shorttext       = "#000000",
   shortrighttext  = "#7C4C4E",
 
+  recordingbg     = "#F44747",
+
   red             = "#D16969",
   green           = "#608B4E",
   blue            = "#569CD6",
@@ -148,6 +150,9 @@ local function set_highlights()
   hl("SlShortText", colors.shorttext, colors.shortbg)
   hl("SlShortRight", colors.shortrighttext, colors.bg)
   hl("SlBg", nil, colors.bg)
+
+  hl("SlRecordingEdge", colors.recordingbg, colors.bg)
+  hl("SlRecording", colors.modetext, colors.recordingbg)
 end
 
 -- Rag status function
@@ -217,6 +222,15 @@ local function mode_section()
     .. c("SlViModeEdge", leftbracket)
     .. c("SlViMode", icons.vim .. " " .. mode[2])
     .. c("SlViModeEdge", rightbracket .. " ")
+end
+
+-- cmdheight = 0 and showmode = false hide Neovim's own "recording @x" message
+local function recording_section()
+  local reg = vim.fn.reg_recording()
+  if reg == "" then return "" end
+  return c("SlRecordingEdge", leftbracket)
+    .. c("SlRecording", "\u{F044A} REC @" .. esc(reg))
+    .. c("SlRecordingEdge", rightbracket .. " ")
 end
 
 local function git_section()
@@ -339,6 +353,7 @@ function M.render()
       return short_line()
     end
     return mode_section()
+      .. recording_section()
       .. git_section()
       .. lsp_section()
       .. c("SlBg", "%=")
@@ -357,6 +372,11 @@ function M.setup()
   vim.api.nvim_create_autocmd({ "DiagnosticChanged", "LspAttach", "LspDetach" }, {
     group = group,
     callback = function() vim.cmd.redrawstatus() end,
+  })
+  -- reg_recording() still returns the register during RecordingLeave, so redraw after it
+  vim.api.nvim_create_autocmd({ "RecordingEnter", "RecordingLeave" }, {
+    group = group,
+    callback = function() vim.schedule(function() vim.cmd.redrawstatus() end) end,
   })
   vim.api.nvim_create_autocmd("User", {
     group = group,

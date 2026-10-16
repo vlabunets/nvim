@@ -1,3 +1,7 @@
+-- Extends EcoVimAI from config/EcoVim.lua (kept out of the upstream file)
+---@class EcoVimAI
+---@field model? string Copilot model used by avante (default: "claude-opus-5.5")
+
 return {
 	{
 		"avante-corp/avante.nvim",
@@ -23,7 +27,8 @@ return {
 			hints = { enabled = true },
 			providers = {
 				copilot = {
-					model = "claude-opus-4.5",
+					-- override via EcoVim.plugins.ai.avante.model in user.lua
+					model = EcoVim.plugins.ai.avante.model or "claude-opus-5.5",
 					-- model = "grok-code-fast-1",
 					disable_tools = false,
 					extra_request_body = {

@@ -94,8 +94,9 @@ wk.add({
 
 wk.add({
   { "<leader>a",  group = "Actions",                mode = { "n", "v" } },
-  { "<leader>an", "<cmd>set nonumber!<CR>",         desc = "line numbers" },
-  { "<leader>ar", "<cmd>set norelativenumber!<CR>", desc = "relative number" },
+  { "<leader>al",  group = "Lines" },
+  { "<leader>all", "<cmd>set nonumber!<CR>",         desc = "line numbers" },
+  { "<leader>alr", "<cmd>set norelativenumber!<CR>", desc = "relative number" },
 })
 
 wk.add({
