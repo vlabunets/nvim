@@ -39,6 +39,7 @@ vim.lsp.config('*', {
 require("config.lsp.servers.lua_ls")
 require("config.lsp.servers.jsonls")
 require("config.lsp.servers.cssls")
+require("config.lsp.servers.somesass_ls")
 require("config.lsp.servers.eslint")
 require("config.lsp.servers.tailwindcss")
 require("config.lsp.servers.vue_ls")

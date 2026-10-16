@@ -87,10 +87,10 @@ return {
 					-- Actions
 					map("n", "<leader>ghs", gs.stage_hunk, { desc = "stage hunk" })
 					map("n", "<leader>ghr", gs.reset_hunk, { desc = "reset hunk" })
-					map("v", "<leader>hs", function()
+					map("v", "<leader>ghs", function()
 						gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
 					end, { desc = "stage selected hunk" })
-					map("v", "<leader>hr", function()
+					map("v", "<leader>ghr", function()
 						gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
 					end, { desc = "reset selected hunk" })
 					map("n", "<leader>ghS", gs.stage_buffer, { desc = "stage buffer" })
@@ -102,6 +102,13 @@ return {
 					end, { desc = "blame line" })
 					map("n", "<leader>ghd", gs.diffthis, { desc = "diff hunk" })
 					map("n", "<leader>ght", gs.toggle_deleted, { desc = "toggle deleted" })
+					-- Diff signs against the commit before HEAD, so the last commit's changes show too
+					map("n", "<leader>ghb", function()
+						vim.g.gitsigns_base_last_commit = not vim.g.gitsigns_base_last_commit
+						local base = vim.g.gitsigns_base_last_commit and "HEAD~1" or nil
+						gs.change_base(base, true)
+						vim.notify("Git signs base: " .. (base or "index"))
+					end, { desc = "toggle base: last commit" })
 
 					-- Text object
 					map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", { desc = "Inner hunk" })
@@ -109,6 +116,7 @@ return {
 			})
 		end,
 		keys = {
+			{ "<leader>ghb" },
 			{ "<leader>ghd" },
 			{ "<leader>ghp" },
 			{ "<leader>ghR" },

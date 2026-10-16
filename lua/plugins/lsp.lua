@@ -58,6 +58,7 @@ return {
 				"oxlint",
 				"prismals",
 				"pyright",
+				"somesass_ls",
 				"sqlls",
 				"tailwindcss",
 				"terraformls",

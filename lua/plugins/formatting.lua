@@ -7,6 +7,8 @@ return {
 
       local default_formatters = {
         css = { "prettierd", "prettier" },
+        scss = { "prettierd", "prettier" },
+        less = { "prettierd", "prettier" },
         graphql = { "prettierd", "prettier" },
         html = { "prettierd", "prettier" },
         hcl = { "hclfmt" },
