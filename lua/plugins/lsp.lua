@@ -134,8 +134,9 @@ return {
 			{ "<leader>cR", function() Snacks.rename.rename_file() end, desc = "Rename File" },
 
 			-- Formatting
-			{ "<leader>cf", vim.lsp.buf.format, desc = "Format Document" },
-			{ "<leader>cf", vim.lsp.buf.format, desc = "Format Range", mode = "v" },
+			-- Through conform (LSP as fallback) so filetypes without an LSP formatter, like htmlangular, still format
+			{ "<leader>cf", function() require("conform").format({ lsp_format = "fallback" }) end, desc = "Format Document" },
+			{ "<leader>cf", function() require("conform").format({ lsp_format = "fallback" }) end, desc = "Format Range", mode = "v" },
 
 			-- Symbols
 			{ "<leader>ss", vim.lsp.buf.document_symbol, desc = "Document Symbols" },

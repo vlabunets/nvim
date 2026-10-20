@@ -49,6 +49,7 @@ require("config.lsp.servers.graphql")
 require("config.lsp.servers.prismals")
 require("config.lsp.servers.denols")
 require("config.lsp.servers.yamlls")
+require("config.lsp.servers.angularls")
 
 -- Load TypeScript server config based on user preference
 -- ts_ls is the default (stable); tsgo is the experimental, faster alternative
