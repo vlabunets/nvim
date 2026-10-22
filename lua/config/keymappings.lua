@@ -44,15 +44,16 @@ keymap("i", "<D-s>", "<Esc><D-s>", { remap = true, silent = true, desc = "Format
 
 -- Remove highlights
 keymap("n", "<CR>", ":noh<CR><CR>", { silent = true, desc = "Clear search highlight" })
+keymap("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
 
 -- Buffers
 -- keymap("n", "<Tab>", ":BufferLineCycleNext<CR>", { silent = true, desc = "Next buffer" })
+-- keymap("n", "<S-Tab>", ":BufferLineCyclePrev<CR>", { silent = true, desc = "Previous buffer" })
 keymap("n", "]]", ":BufferLineCycleNext<CR>", { silent = true, desc = "Next buffer" })
-keymap("n", "gn", ":bn<CR>", { silent = true, desc = "Next buffer" })
-keymap("n", "<S-Tab>", ":BufferLineCyclePrev<CR>", { silent = true, desc = "Previous buffer" })
 keymap("n", "[[", ":BufferLineCyclePrev<CR>", { silent = true, desc = "Previous buffer" })
 keymap("n", "<F19>", ":BufferLineCyclePrev<CR>", { silent = true, desc = "Previous buffer" })
-keymap("n", "gp", ":bp<CR>", { silent = true, desc = "Previous buffer" })
+keymap("n", "gn", ":bn<CR>", { silent = true, desc = "Next buffer" })
+keymap("n", "gm", ":bp<CR>", { silent = true, desc = "Previous buffer" })
 keymap("n", "<S-q>", ":lua Snacks.bufdelete()<CR>", { silent = true, desc = "Close buffer" })
 keymap("n", "<D-q>", ":lua Snacks.bufdelete()<CR>", { silent = true, desc = "Close buffer" })
 keymap("n", "<D-w>", ":lua Snacks.bufdelete()<CR>", { silent = true, desc = "Close buffer" })
