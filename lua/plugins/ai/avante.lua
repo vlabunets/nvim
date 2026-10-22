@@ -1,6 +1,8 @@
 -- Extends EcoVimAI from config/EcoVim.lua (kept out of the upstream file)
 ---@class EcoVimAI
 ---@field model? string Copilot model used by avante (default: "claude-opus-5.5")
+---@field claudeModel? string Claude Code model for the claude-code ACP provider, Anthropic ID or alias (default: Claude Code's own setting)
+---@field lmstudioModel? string LM Studio model id (default: "qwen/qwen3.8-27b")
 
 return {
 	{
@@ -9,8 +11,8 @@ return {
 		lazy = false,
 		version = false,
 		opts = {
+			-- Switch at runtime with :AvanteSwitchProvider (copilot | claude-code | lmstudio)
 			provider = "copilot",
-			-- provider = "claude",
 			mode = "agentic", -- The default mode for interaction. "agentic" uses tools to automatically generate code, "legacy" uses the old planning method to generate code.
 			auto_suggestions_provider = "copilot",
 			behaviour = {
@@ -32,7 +34,38 @@ return {
 					-- model = "grok-code-fast-1",
 					disable_tools = false,
 					extra_request_body = {
-						max_tokens = 200000,
+						-- output tokens, not context: Copilot rejects/clamps values above the model's output cap
+						max_tokens = 32000,
+					},
+				},
+				-- Local model served by LM Studio (OpenAI-compatible API)
+				lmstudio = {
+					__inherited_from = "openai",
+					endpoint = "http://127.0.0.1:1234/v1",
+					-- override via EcoVim.plugins.ai.avante.lmstudioModel in user.lua
+					model = EcoVim.plugins.ai.avante.lmstudioModel or "qwen/qwen3.8-27b",
+					api_key_name = "", -- LM Studio doesn't need a key
+					timeout = 120000, -- local generation is slow
+					context_window = 200000, -- keep below LM Studio's loaded context length
+					use_response_api = false,
+					extra_request_body = {
+						temperature = 0.6,
+						max_completion_tokens = 16384,
+					},
+				},
+			},
+			-- Claude Code over ACP: runs the official `claude` CLI with its claude.ai (Pro) login.
+			-- Needs `npm i -g @agentclientprotocol/claude-agent-acp` on PATH.
+			acp_providers = {
+				["claude-code"] = {
+					command = "claude-agent-acp",
+					env = {
+						-- avante passes only PATH + this table; Claude Code needs HOME and USER
+						-- (keychain lookup) to find its claude.ai login, otherwise prompts hang
+						HOME = os.getenv("HOME"),
+						USER = os.getenv("USER"),
+						-- override via EcoVim.plugins.ai.avante.claudeModel in user.lua; nil keeps Claude Code's default
+						ANTHROPIC_MODEL = EcoVim.plugins.ai.avante.claudeModel,
 					},
 				},
 			},

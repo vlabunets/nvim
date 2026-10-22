@@ -289,6 +289,55 @@ No merge conflicts with your personal settings!
 - Edit `config/options.lua` for vim options
 - Create files in `lua/plugins/` for new plugins
 
+### MCP servers (MCPHub)
+
+[MCPHub](https://github.com/ravitemer/mcphub.nvim) gives Avante access to MCP servers. The servers are **not** configured in Lua. The `mcp-hub` process reads them from JSON files:
+
+| File | Scope |
+|------|-------|
+| `~/.config/mcphub/servers.json` | Global, used in every project. Lives outside this repo, so tokens never end up in git. |
+| `.mcphub/servers.json`, `.vscode/mcp.json` or `.cursor/mcp.json` in a project root | Per project. Merged on top of the global file and served by a separate hub on a port in 40000-41000. |
+
+Example `~/.config/mcphub/servers.json`:
+
+```jsonc
+{
+  "mcpServers": {
+    // local (stdio) server
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "${userHome}/projects"]
+    },
+    // remote server with a token taken from the gh CLI
+    "github": {
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": { "Authorization": "Bearer ${cmd: gh auth token}" }
+    },
+    // secret read from the macOS keychain:
+    //   security add-generic-password -a "$USER" -s figma-api-key -w
+    "figma": {
+      "command": "npx",
+      "args": ["-y", "figma-developer-mcp", "--stdio"],
+      "env": { "FIGMA_API_KEY": "${cmd: security find-generic-password -s figma-api-key -w}" }
+    }
+  },
+  // built-in servers; "neovim" duplicates Avante's own file/terminal tools
+  "nativeMCPServers": {
+    "neovim": { "disabled": true }
+  }
+}
+```
+
+The real file must be plain JSON, so leave out the comments.
+
+- **Server fields.** Local servers use `command`, `args`, `env` and `cwd`. Remote servers use `url` and `headers`; mcp-hub tries streamable HTTP first and falls back to SSE.
+- **Placeholders.** `${env:VAR}`, `${cmd: …}`, `${userHome}` and `${workspaceFolder}` work in every field. Don't paste tokens in as plain text.
+- **Applying changes.** Edit the file, or use `:MCPHub` to add, toggle, authorize (OAuth) and restart servers. The hub watches the file and reloads it.
+- **Environment variables.** The hub is a long-lived process shared by all Neovim instances and shuts down 5 minutes after the last one closes. It reads environment variables only when it starts, so restart it from `:MCPHub` after changing them.
+- **Logs.** `~/.local/state/mcp-hub/logs/mcp-hub.log`
+- **Not for `claude-code`.** Avante's `claude-code` provider runs Claude Code over ACP and doesn't see MCPHub servers. Claude Code loads its own MCP servers (`claude mcp add …` or `.mcp.json`).
+- **Prompt size.** Every enabled server's tool list goes into each Avante request. Disable the servers you don't need to keep prompts small.
+
 ## Keybindings
 
 Space (SPC) is my Leader key.

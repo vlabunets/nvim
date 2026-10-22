@@ -104,9 +104,11 @@ return {
 					"snippets",
 					"buffer",
 					"copilot",
-					"avante_commands",
-					"avante_mentions",
-					"avante_files",
+				},
+				-- avante sources only make sense in its input buffers (they're registered via blink.compat)
+				per_filetype = {
+					AvanteInput = { "avante_commands", "avante_mentions", "avante_shortcuts", "path", "buffer" },
+					AvantePromptInput = { "avante_prompt_mentions", "path", "buffer" },
 				},
 
 				providers = {
@@ -141,10 +143,16 @@ return {
 						score_offset = 90, -- show at a higher priority than lsp
 						opts = {},
 					},
-					avante_files = {
-						name = "avante_files",
+					avante_shortcuts = {
+						name = "avante_shortcuts",
 						module = "blink.compat.source",
-						score_offset = 100, -- show at a higher priority than lsp
+						score_offset = 1000,
+						opts = {},
+					},
+					avante_prompt_mentions = {
+						name = "avante_prompt_mentions",
+						module = "blink.compat.source",
+						score_offset = 1000,
 						opts = {},
 					},
 					avante_mentions = {
