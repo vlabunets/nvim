@@ -15,6 +15,11 @@ return {
 			provider = "copilot",
 			mode = "agentic", -- The default mode for interaction. "agentic" uses tools to automatically generate code, "legacy" uses the old planning method to generate code.
 			auto_suggestions_provider = "copilot",
+			mappings = {
+				-- <leader>am stays free for the Markdown preview (plugins/which-key/setup.lua)
+				select_acp_mode = "<leader>aM",
+				select_acp_model = "<leader>ao",
+			},
 			behaviour = {
 				auto_apply_diff_after_generation = false,
 				auto_focus_sidebar = true,

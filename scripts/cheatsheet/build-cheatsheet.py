@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prints the cheatsheet HTML; build.sh turns it into the PDF. The entries are maintained by hand.
+"""Prints the cheatsheet HTML; rebuild-cheatsheet.sh turns it into the PDF. The entries are maintained by hand.
 
 Key syntax: spaces separate key caps. "/", "·" and "…" render as separators, and SL is a literal "/" key.
 """
@@ -245,7 +245,7 @@ P2 = [
             ("SPC a ?", "Select model", ""),
             ("SPC a h", "History", ""),
             ("SPC a s / a S", "Toggle suggestion / stop", ""),
-            ("SPC a m / a M", "ACP mode / model", ""),
+            ("SPC a M / a o", "ACP mode / model", ""),
             ("SPC a R / a d", "Repo map / debug", ""),
         ]),
         ("Project, Sessions & Refactor", YELLOW, [

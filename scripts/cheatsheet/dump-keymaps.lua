@@ -1,6 +1,6 @@
 -- Dumps every global mapping with all plugins loaded to the file named by $OUT, as tab-separated
 -- "mode lhs desc" lines. Read-only: it never syncs or updates plugins.
--- Run with: OUT=maps.tsv nvim --headless -c "luafile scripts/cheatsheet/dump_maps.lua"
+-- Run with: OUT=maps.tsv nvim --headless -c "luafile scripts/cheatsheet/dump-keymaps.lua"
 local out_path = assert(vim.env.OUT, "set OUT to the output file")
 local leader = vim.g.mapleader or "\\"
 

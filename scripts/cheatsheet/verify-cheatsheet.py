@@ -1,15 +1,24 @@
 #!/usr/bin/env python3
-"""Checks that every key on the cheatsheet exists in a keymap dump from dump_maps.lua.
+"""Checks that every key on the cheatsheet exists in a keymap dump from dump-keymaps.lua.
 
-Usage: verify.py MAPS.tsv
+Usage: verify-cheatsheet.py MAPS.tsv
 
 Exits 1 if an entry is missing. Pattern entries such as m{a-z} and insert-mode completion keys
 can't be matched against the dump, so they are skipped and counted. Keep those correct by hand.
 """
+import importlib.util
+import pathlib
 import re
 import sys
 
-from build import P1, P2
+# The hyphen in the file name rules out a normal import statement.
+sys.dont_write_bytecode = True
+_spec = importlib.util.spec_from_file_location(
+    "build_cheatsheet", pathlib.Path(__file__).with_name("build-cheatsheet.py")
+)
+_cheatsheet = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_cheatsheet)
+P1, P2 = _cheatsheet.P1, _cheatsheet.P2
 
 # Attached per buffer (gitsigns, TypeScript, test files, package.json, Markdown), so they aren't in
 # a global dump. Sources: plugins/git.lua and plugins/which-key/setup.lua. Update them together.
