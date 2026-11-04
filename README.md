@@ -375,7 +375,7 @@ The Snacks explorer uses its own keybindings when focused. Press `?` inside the 
 | `SPC s o`    | Grep open buffers                  |
 | `SPC s h`    | Recent files                       |
 | `SPC s H`    | Command history                    |
-| `SPC s s`    | Search history                     |
+| `SPC s /`    | Search history                     |
 | `SPC s q`    | Quickfix list                      |
 | `SPC s c`    | Color schemes                      |
 | `SPC s d`    | Search dotfiles (nvim config)      |
@@ -408,7 +408,7 @@ The Snacks explorer uses its own keybindings when focused. Press `?` inside the 
 | `SPC c R`              | Rename file                             |
 | `SPC c d`              | Diagnostics list (Snacks picker)        |
 | `SPC c t`              | Toggle format on save                   |
-| `SPC c u`              | Toggle symbol usage (non-TS buffers)    |
+| `SPC c U`              | Toggle symbol usage                     |
 | `SPC c m`              | Mason LSP manager                       |
 | `SPC c l i`            | LSP Info (`:checkhealth vim.lsp`)       |
 | `SPC c l r`            | LSP Restart (`:lsp restart`)            |

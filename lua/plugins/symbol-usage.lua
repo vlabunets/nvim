@@ -46,6 +46,6 @@ return {
     })
   end,
   keys = {
-    { "<leader>cu", function() require("symbol-usage").toggle() end, desc = "Toggle Symbol Usage" },
+    { "<leader>cU", function() require("symbol-usage").toggle() end, desc = "Toggle Symbol Usage" },
   },
 }

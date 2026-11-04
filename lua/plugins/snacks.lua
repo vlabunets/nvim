@@ -228,7 +228,7 @@ return {
 				desc = "command history",
 			},
 			{
-				"<leader>ss",
+				"<leader>s/",
 				function()
 					Snacks.picker.search_history()
 				end,
