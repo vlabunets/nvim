@@ -16,7 +16,8 @@ return {
   {
     "iamcco/markdown-preview.nvim",
     cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
-    build = "cd app && pnpm install",
+    -- Needs yarn.lock: without it @chemzqm/neovim resolves to a version that drops msgpack-lite, which the app requires
+    build = "cd app && yarn install --frozen-lockfile",
     init = function()
       vim.g.mkdp_filetypes = { "markdown" }
     end,
