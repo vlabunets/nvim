@@ -250,6 +250,17 @@ vim.opt.shiftwidth = 4
 - Edit `lua/config/options.lua` for vim options
 - Create files in `lua/plugins/` for new plugins
 
+### Checks before pushing
+
+A pre-push hook in `.githooks/pre-push` checks Lua syntax, that `user.lua` / `AGENTS.md` and secrets stay out of git,
+a clean startup, `lazy-lock.json`, the cheatsheet keys and `:checkhealth lazy`. Enable it once per clone:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+Run it by hand with `.githooks/pre-push`; skip it for one push with `git push --no-verify`.
+
 ### MCP servers (MCPHub)
 
 [MCPHub](https://github.com/ravitemer/mcphub.nvim) gives Avante access to MCP servers. The servers are **not** configured in Lua. The `mcp-hub` process reads them from JSON files:

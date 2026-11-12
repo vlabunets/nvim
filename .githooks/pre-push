@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+# Pre-push checks for this Neovim config. Enable once per clone with:
+#   git config core.hooksPath .githooks
+# Skip for a single push with: git push --no-verify
+#
+# The startup, keymap, lock-file and health checks run against the config Neovim actually loads
+# (~/.config/nvim), so they are skipped when this repo is checked out somewhere else.
+set -uo pipefail
+
+root="$(git rev-parse --show-toplevel)"
+cd "$root" || exit 1
+work="$(mktemp -d)"
+trap 'rm -rf "$work"' EXIT
+
+failed=0
+pass() { printf '  \033[32mok\033[0m    %s\n' "$1"; }
+fail() { printf '  \033[31mFAIL\033[0m  %s\n' "$1"; [ $# -gt 1 ] && printf '%s\n' "$2" | sed 's/^/        /'; failed=1; }
+skip() { printf '  \033[33mskip\033[0m  %s\n' "$1"; }
+
+echo "pre-push checks"
+
+config_dir="$(cd "$(nvim --headless --clean -c 'lua io.write(vim.fn.stdpath("config"))' +qa 2>/dev/null)" 2>/dev/null && pwd -P)"
+is_live=0
+[ "$config_dir" = "$(pwd -P)" ] && is_live=1
+
+# 1. Lua syntax of every tracked Lua file (nvim -l runs without the user config)
+cat >"$work/syntax.lua" <<'EOF'
+local bad = {}
+for _, file in ipairs(arg) do
+  local ok, err = loadfile(file)
+  if not ok then bad[#bad + 1] = err end
+end
+io.write(table.concat(bad, "\n"))
+EOF
+syntax_errors="$(git ls-files -z '*.lua' '*.lua.example' | xargs -0 nvim -l "$work/syntax.lua" 2>&1)"
+if [ -z "$syntax_errors" ]; then pass "Lua syntax"; else fail "Lua syntax" "$syntax_errors"; fi
+
+# 2. Private files and secrets
+private="$(git ls-files lua/config/user.lua AGENTS.md)"
+if [ -n "$private" ]; then
+  fail "private files are tracked (should stay gitignored)" "$private"
+else
+  pass "user.lua and AGENTS.md not tracked"
+fi
+secrets="$(git grep -nIE 'sk-[A-Za-z0-9_-]{20,}|ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{20,}|AKIA[0-9A-Z]{16}|(api_key|apikey|token|secret)[A-Za-z_]*[[:space:]]*=[[:space:]]*"[^"]{12,}"' -- . ':!lazy-lock.json' ':!.githooks/pre-push')"
+if [ -z "$secrets" ]; then pass "no secrets in tracked files"; else fail "possible secrets in tracked files" "$secrets"; fi
+
+if [ "$is_live" -ne 1 ]; then
+  skip "startup, keymaps, lock file and health (repo is not the config Neovim loads: $config_dir)"
+else
+  # 3. Clean startup: any output means an error or deprecation warning
+  startup="$(nvim --headless +qa 2>&1)"
+  if [ -z "$startup" ]; then pass "clean startup"; else fail "startup printed output" "$startup"; fi
+
+  # 4. Every enabled plugin has a lazy-lock.json entry
+  cat >"$work/lock.lua" <<'EOF'
+local ok, lock = pcall(vim.json.decode, table.concat(vim.fn.readfile(vim.fn.stdpath("config") .. "/lazy-lock.json"), "\n"))
+local out = {}
+if not ok then
+  out[1] = "lazy-lock.json is not valid JSON"
+else
+  for name, plugin in pairs(require("lazy.core.config").plugins) do
+    if not plugin._.is_local and not lock[name] then out[#out + 1] = "missing from lazy-lock.json: " .. name end
+  end
+end
+vim.fn.writefile(out, vim.env.OUT)
+vim.cmd("qa!")
+EOF
+  OUT="$work/lock.txt" nvim --headless -c "luafile $work/lock.lua" >/dev/null 2>&1
+  if [ ! -f "$work/lock.txt" ]; then
+    fail "lazy-lock.json check did not run"
+  elif [ -s "$work/lock.txt" ]; then
+    fail "lazy-lock.json" "$(cat "$work/lock.txt")"
+  else
+    pass "lazy-lock.json matches the plugin specs"
+  fi
+
+  # 5. Every key on the cheatsheet still exists
+  OUT="$work/maps.tsv" nvim --headless -c "luafile scripts/cheatsheet/dump-keymaps.lua" >/dev/null 2>&1
+  if [ ! -s "$work/maps.tsv" ]; then
+    fail "keymap dump produced no output"
+  elif keys="$(python3 scripts/cheatsheet/verify-cheatsheet.py "$work/maps.tsv" 2>&1)"; then
+    pass "cheatsheet keys exist ($(printf '%s' "$keys" | tail -n 1))"
+  else
+    fail "cheatsheet lists keys that no longer exist" "$keys"
+  fi
+
+  # 6. :checkhealth lazy reports no errors
+  nvim --headless "+checkhealth lazy" "+w! $work/health.txt" +qa >/dev/null 2>&1
+  health_errors="$(grep -E 'ERROR' "$work/health.txt" 2>/dev/null)"
+  if [ ! -f "$work/health.txt" ]; then
+    fail ":checkhealth lazy did not run"
+  elif [ -z "$health_errors" ]; then
+    pass ":checkhealth lazy"
+  else
+    fail ":checkhealth lazy reports errors" "$health_errors"
+  fi
+fi
+
+if [ "$failed" -ne 0 ]; then
+  echo "pre-push checks failed; fix them or push with --no-verify"
+  exit 1
+fi

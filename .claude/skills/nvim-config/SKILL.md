@@ -86,7 +86,7 @@ return {
 
 ## Verify every change
 
-From the config root run `bash .claude/skills/nvim-config/scripts/check.sh`. It syncs plugins, does a clean headless startup, and greps `:checkhealth lazy`. Any output from the startup step means the change isn't done. That includes "Failed to source", "Error", "module … not found", and deprecation notices. If you can't run the script, run the steps manually:
+From the config root run `bash .claude/skills/nvim-config/scripts/check.sh`. Before pushing, also run `.githooks/pre-push` (the pre-push hook, enabled with `git config core.hooksPath .githooks`). It syncs plugins, does a clean headless startup, and greps `:checkhealth lazy`. Any output from the startup step means the change isn't done. That includes "Failed to source", "Error", "module … not found", and deprecation notices. If you can't run the script, run the steps manually:
 
 ```sh
 nvim --headless "+Lazy! sync" +qa
