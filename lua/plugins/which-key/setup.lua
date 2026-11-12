@@ -1,0 +1,220 @@
+local present, wk = pcall(require, "which-key")
+if not present then
+  return
+end
+
+wk.setup {
+  plugins = {
+    marks = true,     -- shows a list of your marks on ' and `
+    registers = true, -- shows your registers on " in NORMAL or <C-r> in INSERT mode
+    -- the presets plugin, adds help for a bunch of default keybindings in Neovim
+    -- No actual key bindings are created
+    spelling = {
+      enabled = true,   -- enabling this will show WhichKey when pressing z= to select spelling suggestions
+      suggestions = 20, -- how many suggestions should be shown in the list?
+    },
+    presets = {
+      operators = false, -- adds help for operators like d, y, ... and registers them for motion / text object completion
+      motions = false,   -- adds help for motions text_objects = false, -- help for text objects triggered after entering an operator
+      windows = false,   -- default bindings on <c-w>
+      nav = false,       -- misc bindings to work with windows
+      z = true,          -- bindings for folds, spelling and others prefixed with z
+      g = false,         -- bindings for prefixed with g
+    },
+  },
+  icons = {
+    breadcrumb = "»", -- symbol used in the command line area that shows your active key combo
+    separator = "➜", -- symbol used between a key and it's label
+    group = "+", -- symbol prepended to a group
+  },
+  win = {
+    border = Nvim.ui.float.border or "rounded", -- none, single, double, shadow, rounded
+    padding = { 2, 2, 2, 2 },                     -- extra window padding [top, right, bottom, left]
+  },
+  layout = {
+    height = { min = 4, max = 25 }, -- min and max height of the columns
+    width = { min = 20, max = 50 }, -- min and max width of the columns
+    spacing = 4,                    -- spacing between columns
+    align = "left",                 -- align columns left, center or right
+  },
+  show_help = true,                 -- show help message on the command line when the popup is visible
+}
+
+-- ignore
+wk.add({
+  { "<leader><leader>", group = "Swap buffer" },
+  { "<leader>1",        hidden = true },
+  { "<leader>2",        hidden = true },
+  { "<leader>3",        hidden = true },
+  { "<leader>4",        hidden = true },
+  { "<leader>5",        hidden = true },
+  { "<leader>6",        hidden = true },
+  { "<leader>7",        hidden = true },
+  { "<leader>8",        hidden = true },
+  { "<leader>9",        hidden = true },
+  { "<leader><left>",        hidden = true },
+  { "<leader><right>",        hidden = true },
+  { "<leader><up>",        hidden = true },
+  { "<leader><down>",        hidden = true },
+})
+
+-- single
+wk.add({
+  { "<leader>=", "<cmd>vertical resize +5<CR>", desc = "resize +5" },
+  { "<leader>-", "<cmd>vertical resize -5<CR>", desc = "resize -5" },
+  { "<leader>v", "<C-W>v",                      desc = "split right" },
+  { "<leader>V", "<C-W>s",                      desc = "split below" },
+  { "<leader>q", desc = "quicklist" },
+  { "<leader>,", desc = "quickfix prev" },
+  { "<leader>.", desc = "quickfix next" },
+  { "<leader>h", desc = "harpoon menu" },
+  { "<leader>H", desc = "harpoon add file" },
+  { "<leader>[", desc = "harpoon prev" },
+  { "<leader>]", desc = "harpoon next" },
+  { "<leader>m", desc = "add cursor below" },
+  { "<leader>l", desc = "lint file" },
+  { "<leader>y", desc = "yazi file manager", mode = { "n", "v" } },
+  { "<leader>x", desc = "delete cursor" },
+  { "<leader>A", desc = "align cursors" },
+  { "<leader>gv", desc = "restore cursors" },
+  { "gs", desc = "switch value (true/false, ...)" }, -- switch.vim default mapping
+  { "zi", desc = "Toggle all folds on/off (keeps fold state)" }, -- clarify built-in 'foldenable' toggle
+})
+
+wk.add({
+  { "<leader>/",  group = "Nvim" },
+  { "<leader>/s", group = "Session" },
+  { "<leader>//", function() Snacks.dashboard() end, desc = "open dashboard" },
+  { "<leader>/c", "<cmd>e $MYVIMRC<CR>",  desc = "open config" },
+  { "<leader>/i", "<cmd>Lazy<CR>",        desc = "manage plugins" },
+  { "<leader>/u", "<cmd>Lazy update<CR>", desc = "update plugins" },
+})
+
+wk.add({
+  { "<leader>a",  group = "Actions",                mode = { "n", "v" } },
+  { "<leader>al",  group = "Lines" },
+  { "<leader>all", "<cmd>set nonumber!<CR>",         desc = "line numbers" },
+  { "<leader>alr", "<cmd>set norelativenumber!<CR>", desc = "relative number" },
+})
+
+wk.add({
+  { "<leader>b",  group = "Buffer" },
+  { "<leader>bs", group = "Sort" },
+  { "<leader>bc", '<cmd>lua Snacks.bufdelete.other()<CR>', desc = "Close but current" },
+  { "<leader>bf", "<cmd>bfirst<CR>",                                   desc = "First buffer" },
+})
+
+wk.add({
+  { "<leader>c",  group = "LSP",                                      mode = { "n", "v" } },
+  { "<leader>ca", desc = "code action",                               mode = { "n", "v" } },
+  { "<leader>cA", desc = "code action (capability)",                   mode = { "n", "v" } },
+  { "<leader>cf", desc = "format",                                    mode = { "n", "v" } },
+  { "<leader>cr", desc = "rename" },
+  { "<leader>cR", desc = "rename file" },
+  { "<leader>ct", '<cmd>LspToggleAutoFormat<CR>',                     desc = "toggle format on save" },
+})
+
+wk.add({
+  { "<leader>d", group = "Debug" },
+})
+
+wk.add({
+  { "<leader>g",   group = "Git",                     mode = { "n", "v" } },
+  { "<leader>ga",  "<cmd>!git add %:p<CR>",           desc = 'add current' },
+  { "<leader>gA",  "<cmd>!git add .<CR>",             desc = 'add all' },
+  { "<leader>gb",  "<cmd>BlameToggle window<CR>",     desc = 'blame' },
+  { "<leader>gc",  group = "Conflict" },
+  { "<leader>gh",  group = "Hunk" },
+  { "<leader>ghr", desc = "reset hunk",               mode = { "v" } },
+  { "<leader>ghs", desc = "stage hunk",               mode = { "v" } },
+  { "<leader>gi",  "<cmd>Octo issue list<CR>",        desc = 'Issues List' },
+  { "<leader>gl",  group = "Log" },
+  { "<leader>gm",  desc = 'blame line' },
+  { "<leader>gp",  "<cmd>Octo pr list<CR>",           desc = 'Pull Requests List' },
+})
+
+wk.add({
+  { "<leader>p",  group = "Project" },
+  { "<leader>pf", desc = "file" },
+  { "<leader>pw", desc = "word" },
+})
+
+wk.add({
+  { "<leader>s",  group = "Search" },
+  { "<leader>s", "<cmd>'<,'>sort<CR>", desc = "sort", mode = { "v" } }
+})
+
+wk.add({
+  { "<leader>t",  group = "Table Mode",  mode = { "n", "v" } },
+  { "<leader>tm", desc = "toggle" },
+  { "<leader>tt", desc = "tableize", mode = { "n", "v" } },
+})
+
+wk.add({
+  { "<leader>o",  group = "Opencode" },
+})
+
+-- Run a whole-file TypeScript source action.
+-- * The server builds removeUnused/addMissingImports/fixAll edits from the diagnostics sent in the
+--   context, which must be LSP-shaped (with `range`), not vim.Diagnostic.
+-- * Only take actions from the TS server: eslint labels its own fixes with the requested kind, which
+--   would turn `apply` into a picker.
+local ts_clients = { ts_ls = true, tsc = true, tsgo = true }
+local function source_action(kind)
+  return function()
+    vim.lsp.buf.code_action({
+      context = { only = { kind }, diagnostics = vim.lsp.diagnostic.from(vim.diagnostic.get(0)) },
+      filter = function(_, client_id)
+        local client = vim.lsp.get_client_by_id(client_id)
+        return client ~= nil and ts_clients[client.name] == true
+      end,
+      apply = true,
+    })
+  end
+end
+
+local function attach_typescript(bufnr)
+  wk.add({
+    { buffer = bufnr },
+    { "<leader>c",   group = "LSP", },
+    { "<leader>ce",  "<cmd>TSC<CR>",                      desc = "workspace errors (TSC)" },
+    { "<leader>co",  source_action("source.organizeImports"),  desc = "organize imports" },
+    { "<leader>ci",  source_action("source.addMissingImports"), desc = "import all" },
+    { "<leader>cu",  source_action("source.removeUnused"),     desc = "remove unused" },
+    { "<leader>cF",  source_action("source.fixAll"),           desc = "fix all" },
+    { "<leader>cR",  function() Snacks.rename.rename_file() end, desc = "rename file" },
+  })
+end
+
+local function attach_npm(bufnr)
+  wk.add({
+    { buffer = bufnr },
+    { "<leader>n",   group = "NPM" },
+    { "<leader>nc",  '<cmd>lua require("package-info").change_version()<CR>', desc = "change version" },
+    { "<leader>nd",  '<cmd>lua require("package-info").delete()<CR>',         desc = "delete package" },
+    { "<leader>nh",  "<cmd>lua require('package-info').hide()<CR>",           desc = "hide" },
+    { "<leader>ni",  '<cmd>lua require("package-info").install()<CR>',        desc = "install new package" },
+    { "<leader>nr",  '<cmd>lua require("package-info").reinstall()<CR>',      desc = "reinstall dependencies" },
+    { "<leader>ns",  '<cmd>lua require("package-info").show()<CR>',           desc = "show" },
+    { "<leader>nu",  '<cmd>lua require("package-info").update()<CR>',         desc = "update package" },
+  })
+end
+
+local function attach_tests(bufnr)
+  wk.add({
+    { buffer = bufnr },
+    { "<leader>j",   group = "Test", },
+    { "<leader>jf",  "<cmd>lua require('neotest').run.run(vim.fn.expand('%'))<CR>",   desc = "run current file" },
+    { "<leader>ji",  "<cmd>lua require('neotest').summary.toggle()<CR>",              desc = "toggle info panel" },
+    { "<leader>jj",  "<cmd>lua require('neotest').run.run()<CR>",                     desc = "run nearest test" },
+    { "<leader>jl",  "<cmd>lua require('neotest').run.run_last()<CR>",                desc = "run last test" },
+    { "<leader>jo",  "<cmd>lua require('neotest').output.open({ enter = true })<CR>", desc = "open test output" },
+    { "<leader>js",  "<cmd>lua require('neotest').run.stop()<CR>",                    desc = "stop" },
+  })
+end
+
+return {
+  attach_typescript = attach_typescript,
+  attach_npm = attach_npm,
+  attach_tests = attach_tests,
+}

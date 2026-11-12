@@ -1,0 +1,181 @@
+-- Personal configuration (gitignored, not tracked by git).
+--
+-- lua/config/nvim.lua loads the defaults first, then this file overrides them.
+-- To start one: cp lua/config/user.lua.example lua/config/user.lua, edit it, and restart Neovim.
+
+-- ╭──────────────────────────────────────────────────────────────╮
+-- │ 1. APPEARANCE                                                │
+-- ╰──────────────────────────────────────────────────────────────╯
+
+-- Change the colorscheme (default: "tokyonight-night")
+-- Available: "tokyonight-night", "tokyonight-storm", "tokyonight-day"
+-- You can install your own!
+-- Nvim.colorscheme = "tokyonight-storm"
+
+-- Change floating window border style
+-- Available: "rounded", "single", "double", "shadow", "none"
+-- Nvim.ui.float.border = "rounded"
+
+
+-- ╭──────────────────────────────────────────────────────────────╮
+-- │ 2. LSP (Language Servers)                                    │
+-- ╰──────────────────────────────────────────────────────────────╯
+
+-- Add additional LSP servers to auto-install
+-- These will be installed via Mason on next startup
+-- Nvim.lsp.ensure_installed = { "rust_analyzer", "gopls", "clangd" }
+
+-- Exclude LSP servers from auto-enabling
+-- (Useful if you want to configure them manually)
+-- Nvim.lsp.exclude = { "ts_ls", "copilot", "rust_analyzer" }
+
+-- Enable format on save (default: false)
+-- Toggle at runtime with :LspToggleAutoFormat
+-- Nvim.lsp.format_on_save = true
+
+-- Disable inlay hints (default: true)
+-- Nvim.lsp.inlay_hints = false
+
+-- Switch TypeScript server (default: "ts_ls")
+-- "tsgo" is Microsoft's native Go-based TS server (fast, experimental)
+-- "ts_ls" is the classic TypeScript language server
+-- The inactive server is automatically excluded from auto-enable
+-- Nvim.lsp.typescript_server = "tsgo"
+
+-- Add custom LSP server configuration
+-- See: https://neovim.io/doc/user/lsp.html
+-- Nvim.lsp.servers.mylsp = {
+--   cmd = { "my-lsp", "--stdio" },
+--   filetypes = { "javascript", "typescript" },
+--   root_markers = { ".git", "package.json" },
+-- }
+
+
+-- ╭──────────────────────────────────────────────────────────────╮
+-- │ 3. FORMATTING & LINTING                                      │
+-- ╰──────────────────────────────────────────────────────────────╯
+
+-- Override default formatters per filetype
+-- The first available formatter will be used
+-- Nvim.formatters = {
+--   javascript = { "prettierd", "prettier" },
+--   typescript = { "prettierd" },
+--   lua = { "stylua" },
+-- }
+
+-- Override default linters per filetype
+-- Nvim.linters = {
+--   javascript = { "eslint_d", "oxlint" },
+--   typescript = { "eslint_d" },
+-- }
+
+
+-- ╭──────────────────────────────────────────────────────────────╮
+-- │ 4. AUTOCOMMANDS                                              │
+-- ╰──────────────────────────────────────────────────────────────╯
+
+-- Add custom autocmds that run automatically
+-- Nvim.autocmds.auto_save = {
+--   event = "FocusLost",                    -- Trigger event
+--   pattern = "*",                          -- File pattern
+--   command = "silent! wa",                 -- Command to run
+-- }
+
+-- Nvim.autocmds.highlight_yank = {
+--   event = "TextYankPost",
+--   pattern = "*",
+--   callback = function()
+--     vim.highlight.on_yank({ higroup = "IncSearch", timeout = 100 })
+--   end,
+-- }
+
+
+-- ╭──────────────────────────────────────────────────────────────╮
+-- │ 5. PLUGIN OVERRIDES                                          │
+-- ╰──────────────────────────────────────────────────────────────╯
+
+-- Override ANY plugin configuration without modifying plugin files
+-- This is the most powerful customization option!
+-- Use the plugin's repo name (e.g., "snacks.nvim", "blink.cmp", "todo-comments.nvim")
+
+-- Example: Change Snacks picker layout (function receives plugin and opts)
+-- Nvim.plugin_overrides["snacks.nvim"] = function(_, opts)
+--   opts.picker.layout = "vertical"
+--   opts.picker.preview = false
+-- end
+
+-- Example: Customize blink.cmp
+-- Nvim.plugin_overrides["blink.cmp"] = function(_, opts)
+--   opts.completion.menu.auto_show = false
+-- end
+
+-- Example: Override any plugin with a table (deep-merged with defaults)
+-- Nvim.plugin_overrides["todo-comments.nvim"] = {
+--   signs = false,
+--   highlight = { keyword = "bg" },
+-- }
+
+
+-- ╭──────────────────────────────────────────────────────────────╮
+-- │ 6. PLUGIN TOGGLES                                            │
+-- ╰──────────────────────────────────────────────────────────────╯
+
+-- Enable/disable specific AI plugins
+-- Nvim.plugins.ai.avante.enabled = false
+-- Nvim.plugins.ai.copilot.enabled = false
+-- Nvim.plugins.ai.opencode.enabled = true
+
+-- Disable ghost text in completions (default: true)
+-- Nvim.plugins.completion.ghost_text = false
+
+-- Disable inline git blame on current line (default: true)
+-- Toggle at runtime with :Gitsigns toggle_current_line_blame
+-- Nvim.plugins.git.blame_line = false
+
+-- Enable jump by subwords (better word navigation)
+-- Nvim.plugins.jump_by_subwords.enabled = true
+
+
+-- ╭──────────────────────────────────────────────────────────────╮
+-- │ 7. PROJECT & MONOREPO SETTINGS                               │
+-- ╰──────────────────────────────────────────────────────────────╯
+
+-- Configure which directories are scanned for projects (<leader>pl)
+-- Nvim.plugins.projects.dev = { "~/Projects", "~/.config" }
+
+-- Configure how project roots are detected
+-- Default uses only .git to avoid sub-package false positives in monorepos
+-- Nvim.plugins.projects.patterns = { ".git" }
+
+-- Configure vim-rooter patterns (determines cwd when opening files)
+-- Supports monorepo tools: pnpm, Turborepo, Nx, Lerna, Rush
+-- Default excludes package.json to prevent cwd from changing to sub-packages
+-- If you don't use monorepos, you may want to add "package.json" back
+-- Nvim.plugins.rooter.patterns = {
+--   "pnpm-workspace.yaml", "turbo.json", "nx.json", "lerna.json", "rush.json",
+--   ".git", "package.json",
+-- }
+
+
+-- ╭──────────────────────────────────────────────────────────────╮
+-- │ 8. STATUSLINE                                                │
+-- ╰──────────────────────────────────────────────────────────────╯
+
+-- Show full path in statusline
+-- Nvim.statusline.path_enabled = true
+-- Nvim.statusline.path = "absolute"  -- or "relative"
+
+
+-- ╭──────────────────────────────────────────────────────────────╮
+-- │ 9. DIRECT VIM OPTIONS                                        │
+-- ╰──────────────────────────────────────────────────────────────╯
+
+-- You can also set raw vim options here
+-- vim.o.tabstop = 4
+-- vim.o.shiftwidth = 4
+-- vim.o.expandtab = false
+-- vim.o.number = false
+-- vim.o.relativenumber = false
+
+
+-- More help: README.md, and the plugin specs in lua/plugins/
