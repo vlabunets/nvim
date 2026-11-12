@@ -5,7 +5,7 @@ description: Work on this Neovim config (Lua + lazy.nvim) at ~/.config/nvim. Use
 
 # Neovim config
 
-This is a standalone Neovim config (repo `vlabunets/dotfiles-nvim`, main branch `nvim-dev`; settings live on the global `Nvim` table), run on macOS (Apple Silicon, Homebrew at `/opt/homebrew`) with **lazy.nvim**. Neovim runs on **LuaJIT, so Lua 5.1 semantics apply**: no `//`, no native bitwise operators (use `bit`), and `table.unpack` is shimmed to `unpack`. If `AGENTS.md` exists at the root, read it too. It is gitignored and local-only, and it wins over this skill on conflicts.
+This is a standalone Neovim config (repo `vlabunets/nvim`: `main` is the stable branch, day-to-day work happens on `nvim-dev`; settings live on the global `Nvim` table), run on macOS (Apple Silicon, Homebrew at `/opt/homebrew`) with **lazy.nvim**. Neovim runs on **LuaJIT, so Lua 5.1 semantics apply**: no `//`, no native bitwise operators (use `bit`), and `table.unpack` is shimmed to `unpack`. If `AGENTS.md` exists at the root, read it too. It is gitignored and local-only, and it wins over this skill on conflicts.
 
 ## How the config is wired
 

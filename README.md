@@ -128,7 +128,7 @@ On macOS: `brew install neovim git ripgrep fd tree-sitter-cli lazygit yazi node 
 **Install**
 
 ```bash
-git clone https://github.com/vlabunets/dotfiles-nvim ~/.config/nvim
+git clone https://github.com/vlabunets/nvim ~/.config/nvim
 nvim
 ```
 
