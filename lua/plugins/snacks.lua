@@ -348,6 +348,13 @@ return {
 			{
 				"<leader>sc",
 				function()
+					-- Colorscheme plugins that load on demand (catppuccin, onedarkpro) aren't on the
+					-- runtimepath yet, so their schemes would be missing from the list: load them first
+					for _, plugin in pairs(require("lazy.core.config").plugins) do
+						if not plugin._.loaded and vim.uv.fs_stat(plugin.dir .. "/colors") then
+							require("lazy").load({ plugins = { plugin.name } })
+						end
+					end
 					Snacks.picker.colorschemes()
 				end,
 				desc = "color schemes",
