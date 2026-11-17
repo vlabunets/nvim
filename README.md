@@ -21,7 +21,7 @@ For **Neovim 0.12+**. Free to use, modify and share under the GPL-3.0 license (s
 <td valign="top" width="33%">
 
 ### 🎨 UI & Experience
-- [Tokyonight](https://github.com/folke/tokyonight.nvim) theme ([Catppuccin](https://github.com/catppuccin/nvim) also installed)
+- [Tokyonight](https://github.com/folke/tokyonight.nvim) theme ([Catppuccin](https://github.com/catppuccin/nvim) and [OneDarkPro](https://github.com/olimorris/onedarkpro.nvim) also installed, loaded on demand)
 - Hand-written statusline and winbar with [navic](https://github.com/SmiteshP/nvim-navic) breadcrumbs (`lua/internal/`)
 - [Snacks.nvim](https://github.com/folke/snacks.nvim) - dashboard, picker, explorer, notifications, terminal, zen
 - [noice](https://github.com/folke/noice.nvim) - cmdline, messages and LSP progress
@@ -38,7 +38,8 @@ For **Neovim 0.12+**. Free to use, modify and share under the GPL-3.0 license (s
 - React / Next.js, Angular (with a version check for the Angular language server), Vue (TypeScript through `ts_ls`)
 - Tailwind CSS: language server, [tw-values](https://github.com/MaximilianLloyd/tw-values.nvim), [tailwind-fold](https://github.com/razak17/tailwind-fold.nvim), [tailwindcss-dial](https://github.com/ruicsh/tailwindcss-dial.nvim)
 - CSS / SCSS ([Some Sass](https://github.com/wkillerud/some-sass)), HTML, Emmet, GraphQL, Prisma, Deno
-- [blink.cmp](https://github.com/Saghen/blink.cmp) completion with [LuaSnip](https://github.com/L3MON4D3/LuaSnip) snippets
+- [blink.cmp](https://github.com/Saghen/blink.cmp) completion with [LuaSnip](https://github.com/L3MON4D3/LuaSnip) snippets (`Enter` accepts)
+- Renaming or moving a file in the Snacks explorer or yazi updates and saves the imports that point to it
 - [package-info](https://github.com/vuki656/package-info.nvim) - npm versions in `package.json`
 - [Vitest](https://vitest.dev/) through [neotest](https://github.com/nvim-neotest/neotest) (Angular `ng test` aware) and [coverage](https://github.com/andythigpen/nvim-coverage)
 
@@ -63,6 +64,7 @@ For **Neovim 0.12+**. Free to use, modify and share under the GPL-3.0 license (s
 - Native LSP (`vim.lsp.config`) with servers installed by [mason.nvim](https://github.com/mason-org/mason.nvim)
 - [conform.nvim](https://github.com/stevearc/conform.nvim) formatting, optional format on save
 - [nvim-lint](https://github.com/mfussenegger/nvim-lint) on open and save (eslint_d, oxlint, biome, pylint, hadolint, tflint)
+- Sonar rules ([eslint-plugin-sonarjs](https://github.com/SonarSource/SonarJS)) on every JS/TS file, without project setup
 - [SchemaStore](https://github.com/b0o/SchemaStore.nvim) - JSON/YAML schemas
 - [inc-rename](https://github.com/smjonas/inc-rename.nvim), [symbol-usage](https://github.com/Wansmer/symbol-usage.nvim), [lazydev](https://github.com/folke/lazydev.nvim)
 - [grug-far](https://github.com/MagicDuck/grug-far.nvim) - search & replace (also ast-grep)
@@ -72,11 +74,12 @@ For **Neovim 0.12+**. Free to use, modify and share under the GPL-3.0 license (s
 <td valign="top" width="33%">
 
 ### 🌳 Git Integration
-- [Lazygit](https://github.com/jesseduffield/lazygit) through Snacks
+- [Lazygit](https://github.com/jesseduffield/lazygit) through Snacks; `e` opens the file in the window you launched it from
 - [gitsigns](https://github.com/lewis6991/gitsigns.nvim) - hunks, inline blame, signs against the index or the last commit
-- [diffview-plus](https://github.com/dlyongemallo/diffview-plus.nvim) - diff viewer and file history
+- [codediff](https://github.com/esmuellert/codediff.nvim) - main diff viewer and history (compact mode, file tree with line stats)
+- [diffview-plus](https://github.com/dlyongemallo/diffview-plus.nvim) - also installed, from its commands (`:DiffviewOpen`, …)
 - [octo.nvim](https://github.com/pwntester/octo.nvim) - GitHub PRs & issues
-- [gitlinker](https://github.com/linrongbin16/gitlinker.nvim) - copy links to lines
+- [gitlinker](https://github.com/linrongbin16/gitlinker.nvim) - copy or open GitHub links to lines
 - [blame.nvim](https://github.com/FabijanZulj/blame.nvim) - blame panel
 
 </td>
@@ -87,7 +90,7 @@ For **Neovim 0.12+**. Free to use, modify and share under the GPL-3.0 license (s
 
 | Feature | Plugin / server | Description |
 |---------|-----------------|-------------|
-| **TypeScript server** | `ts_ls` or `tsgo` | Pick with `Nvim.lsp.typescript_server`; `ts_ls` also serves TypeScript in `.vue` files |
+| **TypeScript server** | `ts_ls` or `tsgo` | Pick with `Nvim.lsp.typescript_server`; `ts_ls` also serves TypeScript in `.vue` files. Switching to tsgo: [tsgo-transition-plan.md](./tsgo-transition-plan.md) |
 | **Import actions** | `ts_ls` | Organize imports, add missing imports, remove unused code, fix all (`SPC c o/i/u/F`) |
 | **Type checking** | [tsc.nvim](https://github.com/dmmulroy/tsc.nvim) | Async project-wide `tsc --noEmit` with quickfix (`SPC c e`) |
 | **Error translation** | [ts-error-translator](https://github.com/dmmulroy/ts-error-translator.nvim) | Human-readable TypeScript errors |
@@ -104,7 +107,7 @@ For **Neovim 0.12+**. Free to use, modify and share under the GPL-3.0 license (s
 
 ### 🚀 Performance
 - **Startup time:** about 80-120 ms to the dashboard and about 150 ms when opening a file (Apple M5 Pro, measured with `require("lazy").stats()`)
-- **Lazy loading:** 43 of 94 plugins load at startup; the rest load on events, commands, filetypes or keys through [lazy.nvim](https://github.com/folke/lazy.nvim)
+- **Lazy loading:** 42 of 95 plugins load at startup; the rest load on events, commands, filetypes or keys through [lazy.nvim](https://github.com/folke/lazy.nvim)
 
 ## Screenshots
 
@@ -121,7 +124,9 @@ Dashboard
 - The [tree-sitter CLI](https://github.com/tree-sitter/tree-sitter), required by nvim-treesitter's `main` branch to install parsers.
 - Node.js and npm (most language servers and formatters, Copilot), and Python 3 with pip (black, isort, pylint).
 - curl, unzip and tar for Mason; ripgrep and fd for the pickers; [lazygit](https://github.com/jesseduffield/lazygit) and [yazi](https://github.com/sxyazi/yazi) for their keymaps.
-- A [Nerd Font](https://www.nerdfonts.com/font-downloads).
+- A [Nerd Font](https://www.nerdfonts.com/font-downloads), or a terminal that ships
+  Nerd Font symbols (Ghostty, WezTerm). Icons appear in the tabline, statusline,
+  completion menu and file explorer; without either, they render as boxes.
 
 On macOS: `brew install neovim git ripgrep fd tree-sitter-cli lazygit yazi node python`.
 
@@ -328,6 +333,8 @@ Space (`SPC`) is the leader key and `,` the local leader.
 
 The Snacks explorer uses its own keybindings when focused. Press `?` inside the explorer to see all available actions (create, rename, copy, delete, etc.).
 
+Renaming or moving a file (in the Snacks explorer or yazi) asks the language server to update the imports that point to it, and saves the files it changed. A TS/JS file from the project needs to be open so the server is running. Files with unsaved changes of your own get the update but stay unsaved.
+
 </details>
 
 <details>
@@ -426,6 +433,8 @@ Available everywhere:
 | `<C-s>`            | Format and save                          |
 | `SPC l`            | Lint file (nvim-lint)                    |
 
+Sonar rules run on every JS/TS file through a separate ESLint install in `linters/sonarjs` (installed with `npm ci` when nvim-lint is installed), shown as warnings with source `sonarjs`. They're skipped where the project's `package.json` already uses `eslint-plugin-sonarjs`. To turn them off, remove `"sonarjs"` from your filetype lists in `Nvim.linters`.
+
 SCSS and Less are formatted with prettier (project `.prettierrc` is respected). Linters also run on open and on save, except `eslint_d`, `oxlint` and `biomejs` when their language server is attached (it reports the same diagnostics). `eslint_d` and `biomejs` lint only when the project has an eslint / biome config; Angular templates (`*.html`) are linted with eslint.
 
 </details>
@@ -444,12 +453,13 @@ SCSS and Less are formatted with prettier (project `.prettierrc` is respected). 
 | `SPC g A`    | Git add all                                                             |
 | `SPC g b`    | Blame panel (blame.nvim)                                                |
 | `SPC g m`    | Blame line (full commit)                                                |
-| `SPC g d`    | Diff file history (diffview)                                            |
-| `SPC g D`    | Diff view open                                                          |
-| `SPC g S`    | Diff view status                                                        |
+| `SPC g d`    | Toggle diff history (codediff)                                          |
+| `SPC g D`    | Diff view open (codediff)                                               |
+| `SPC g S`    | Toggle diff view of working changes (codediff)                          |
 | `SPC g i`    | GitHub issues list (Octo)                                               |
 | `SPC g p`    | GitHub pull requests list (Octo)                                        |
-| `SPC g L`    | Copy git URL for selection (gitlinker)                                  |
+| `SPC g L`    | Copy GitHub URL for the line / selection (gitlinker)                    |
+| `SPC g B`    | Open the line / selection on GitHub                                     |
 | `]c`         | Next change hunk                                                        |
 | `[c`         | Previous change hunk                                                    |
 | **Hunk actions** |                                                                     |
@@ -462,11 +472,27 @@ SCSS and Less are formatted with prettier (project `.prettierrc` is respected). 
 | `SPC g h d`  | Diff hunk                                                               |
 | `SPC g h t`  | Preview hunk inline                                                     |
 | `SPC g h b`  | Toggle signs base: index / last commit (`HEAD~1`)                       |
+| `SPC g h l`  | List all changed hunks (Snacks picker)                                  |
 | **Git log** |                                                                          |
 | `SPC g l a`  | Lazygit log (cwd)                                                       |
 | `SPC g l c`  | Lazygit current file history                                            |
 | `SPC g l A`  | Git log (Snacks picker)                                                 |
 | `SPC g l C`  | File commits (Snacks picker)                                            |
+
+Inside a codediff view (local leader is `,`):
+
+| Key Bindings | Description                                                             |
+|--------------|-------------------------------------------------------------------------|
+| `q`          | Close the view                                                          |
+| `]c` / `[c`  | Next / previous hunk                                                    |
+| `]f` / `[f`  | Next / previous file                                                    |
+| `-`          | Stage / unstage the file                                                |
+| `SPC g h s/u/r` | Stage / unstage / discard the hunk under the cursor                  |
+| `, b` / `, e` | Toggle / focus the file tree                                           |
+| `, z`        | Toggle compact mode (only changes plus 8 lines of context)              |
+| `, l`        | Toggle side-by-side / inline                                            |
+| `, c t/o/b/x` | Conflicts: accept incoming / current / both, discard (capitals: whole file) |
+| `g?`         | All keys in the view                                                    |
 
 </details>
 
@@ -604,6 +630,7 @@ Using [jake-stewart/multicursor.nvim](https://github.com/jake-stewart/multicurso
 |-----------------------|------------------------------|
 | `SPC v`               | Split right                  |
 | `SPC V`               | Split below                  |
+| `SPC w`               | Close split                  |
 | `<C-h/j/k/l>`        | Move between splits          |
 | `<A-h/j/k/l>`        | Resize splits (macOS terminals: enable Option as Alt) |
 | `SPC SPC h/j/k/l`    | Swap buffer between splits   |
@@ -704,6 +731,9 @@ Available in `package.json` buffers:
 | `SPC q`            | Toggle quickfix list                                                             |
 | `SPC ,` / `SPC .`  | Previous / next quickfix item                                                   |
 | `SPC y`            | Open Yazi file manager                                                           |
+| **Agent prompts** |                                                                                  |
+| `SPC c y`          | Copy the file path with line (`src/app.ts#L12`)                                  |
+| `SPC c c` (visual) | Copy the selection as a Markdown code block with filename and line               |
 | **Snippets** |                                                                                       |
 | `SPC a s a`        | Add new snippet                                                                  |
 | `SPC a s e`        | Edit snippet                                                                     |
