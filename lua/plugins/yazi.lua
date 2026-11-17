@@ -27,6 +27,11 @@ return {
 				desc = "Resume the last yazi session",
 			},
 		},
+		config = function(_, opts)
+			require("yazi").setup(opts)
+			-- Renames and moves done in yazi save the import updates the LSP makes
+			require("utils.rename").save_lsp_edits(require("yazi.lsp.rename"))
+		end,
 		---@type YaziConfig | {}
 		opts = {
 			-- if you want to open yazi instead of netrw, see below for more info

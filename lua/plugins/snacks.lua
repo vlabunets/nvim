@@ -3,6 +3,11 @@ return {
 		"folke/snacks.nvim",
 		priority = 1000,
 		lazy = false,
+		config = function(_, opts)
+			require("snacks").setup(opts)
+			-- Explorer rename/move and Snacks.rename save the import updates the LSP makes
+			require("utils.rename").save_lsp_edits(require("snacks.rename"))
+		end,
 		opts = {
 			bigfile = { enabled = true },
 			dashboard = {
