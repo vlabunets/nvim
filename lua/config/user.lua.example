@@ -63,10 +63,10 @@
 --   lua = { "stylua" },
 -- }
 
--- Override default linters per filetype
+-- Override default linters per filetype (replaces the default list, so keep "sonarjs" for Sonar rules)
 -- Nvim.linters = {
---   javascript = { "eslint_d", "oxlint" },
---   typescript = { "eslint_d" },
+--   javascript = { "eslint_d", "oxlint", "sonarjs" },
+--   typescript = { "eslint_d", "sonarjs" },
 -- }
 
 

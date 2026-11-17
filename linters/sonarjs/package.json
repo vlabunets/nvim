@@ -1,0 +1,12 @@
+{
+  "name": "nvim-sonarjs-linter",
+  "private": true,
+  "description": "Standalone ESLint + eslint-plugin-sonarjs used by nvim-lint (lua/plugins/linting.lua)",
+  "type": "module",
+  "dependencies": {
+    "eslint": "^10.14.0",
+    "eslint-plugin-sonarjs": "^4.2.2",
+    "typescript": ">=5 <6.1.0",
+    "typescript-eslint": "^8.72.2"
+  }
+}
