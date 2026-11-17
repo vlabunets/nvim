@@ -371,6 +371,13 @@ return {
 				desc = "git status",
 			},
 			{
+				"<leader>ghl",
+				function()
+					Snacks.picker.git_diff()
+				end,
+				desc = "hunk list",
+			},
+			{
 				"<leader>glA",
 				function()
 					Snacks.picker.git_log()

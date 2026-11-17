@@ -122,17 +122,67 @@ return {
 		},
 	},
 
+	-- Main diff viewer (on trial against diffview-plus below). Downloads a prebuilt native diff
+	-- library and file watcher from its GitHub releases on first use and after updates.
+	{
+		"esmuellert/codediff.nvim",
+		cmd = "CodeDiff",
+		config = function(_, opts)
+			require("plugins.git.codediff").track_tabs()
+			require("codediff").setup(opts)
+		end,
+		keys = {
+			{ "<Leader>gd", function() require("plugins.git.codediff").toggle("history") end, desc = "diff history" },
+			{ "<Leader>gD", "<cmd>CodeDiff<CR>", desc = "diff view open" },
+			{ "<Leader>gS", function() require("plugins.git.codediff").toggle() end, desc = "status" },
+		},
+		opts = {
+			diff = {
+				-- Only changes plus context; toggle with <LocalLeader>z
+				compact = true,
+				compact_context_lines = 8,
+				compact_sync_folds = true, -- opening/closing a fold does the same in the other pane
+			},
+			explorer = {
+				view_mode = "tree", -- toggle list/tree with `i`
+				width = 50,
+				auto_open_on_cursor = true, -- j/k in the file list also open the file
+				line_stats = { enabled = true }, -- +/- counts per file (runs extra git queries)
+			},
+			keymaps = {
+				-- Defaults that clash with global keys are moved: <leader>b (buffers), <leader>e,
+				-- <leader>h (harpoon), <leader>c (LSP), t (flash), gc (comment operator).
+				view = {
+					toggle_explorer = "<LocalLeader>b",
+					focus_explorer = "<LocalLeader>e",
+					-- Same keys as gitsigns' hunk actions in normal buffers
+					stage_hunk = "<Leader>ghs",
+					unstage_hunk = "<Leader>ghu",
+					discard_hunk = "<Leader>ghr",
+					toggle_layout = "<LocalLeader>l",
+					toggle_compact = "<LocalLeader>z",
+				},
+				conflict = {
+					accept_incoming = "<LocalLeader>ct",
+					accept_current = "<LocalLeader>co",
+					accept_both = "<LocalLeader>cb",
+					discard = "<LocalLeader>cx",
+					accept_all_incoming = "<LocalLeader>cT",
+					accept_all_current = "<LocalLeader>cO",
+					accept_all_both = "<LocalLeader>cB",
+					discard_all = "<LocalLeader>cX",
+				},
+			},
+		},
+	},
+
+	-- Kept for comparison, from the command line only (:DiffviewOpen, :DiffviewFileHistory, …)
 	{
 		"dlyongemallo/diffview-plus.nvim",
 		cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewFileHistory", "DiffviewToggleFiles", "DiffviewFocusFiles", "DiffviewRefresh" },
 		config = function()
 			require("plugins.git.diffview")
 		end,
-		keys = {
-			{ "<Leader>gd", "<cmd>lua require('plugins.git.diffview').toggle_file_history()<CR>", desc = "diff file" },
-			{ "<Leader>gD", "<cmd>lua require('diffview').open()<CR>", desc = "diff view open" },
-			{ "<Leader>gS", "<cmd>lua require('plugins.git.diffview').toggle_status()<CR>", desc = "status" },
-		},
 	},
 
 	{
@@ -326,7 +376,9 @@ return {
 			require("gitlinker").setup()
 		end,
 		keys = {
-			{ "<Leader>gL", "<cmd>GitLink<CR>", mode = "x", desc = "get url for selection" },
+			-- Current line in normal mode, the selected lines in visual mode
+			{ "<Leader>gL", "<cmd>GitLink<CR>", mode = { "n", "x" }, desc = "copy GitHub url" },
+			{ "<Leader>gB", "<cmd>GitLink!<CR>", mode = { "n", "x" }, desc = "open in GitHub" },
 		},
 		cmd = "GitLink",
 	},
