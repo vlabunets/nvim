@@ -122,6 +122,10 @@ return {
 			input = { enabled = true },
 			notifier = { enabled = true },
 			explorer = { enabled = true },
+			-- `e` in lazygit opens the file in the window lazygit was launched from (utils/lazygit.lua)
+			lazygit = {
+				config = { os = require("utils.lazygit").os_config },
+			},
 			picker = {
 				enabled = true,
 				-- Symbol pickers use the same kind icons as the completion menu (merged over snacks' own)
@@ -187,21 +191,21 @@ return {
 			{
 				"<leader>gg",
 				function()
-					Snacks.lazygit()
+					require("utils.lazygit").open()
 				end,
 				desc = "Lazygit",
 			},
 			{
 				"<leader>gla",
 				function()
-					Snacks.lazygit.log()
+					require("utils.lazygit").open(Snacks.lazygit.log)
 				end,
 				desc = "Lazygit Log (cwd)",
 			},
 			{
 				"<leader>glc",
 				function()
-					Snacks.lazygit.log_file()
+					require("utils.lazygit").open(Snacks.lazygit.log_file)
 				end,
 				desc = "Lazygit Current File History",
 			},
