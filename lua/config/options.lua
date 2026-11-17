@@ -48,6 +48,7 @@ local globals = {
 }
 
 vim.opt.shortmess:append('c');
+vim.opt.iskeyword:append('-');                     -- kebab-case and CSS classes count as one word
 vim.opt.formatoptions:remove('c');
 vim.opt.formatoptions:remove('r');
 vim.opt.formatoptions:remove('o');
@@ -59,6 +60,7 @@ vim.opt.fillchars:append('foldsep: ');
 vim.opt.fillchars:append('foldclose:');
 vim.opt.fillchars:append('vert:▕');
 vim.opt.fillchars:append('vertleft:▕');
+vim.opt.fillchars:append('diff:╱');                -- Diagonal fill for lines missing on one side of a diff
 
 for k, v in pairs(options) do
   vim.o[k] = v

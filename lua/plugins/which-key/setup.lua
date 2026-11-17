@@ -64,6 +64,7 @@ wk.add({
   { "<leader>-", "<cmd>vertical resize -5<CR>", desc = "resize -5" },
   { "<leader>v", "<C-W>v",                      desc = "split right" },
   { "<leader>V", "<C-W>s",                      desc = "split below" },
+  { "<leader>w", "<C-W>c",                      desc = "close split" },
   { "<leader>q", desc = "quicklist" },
   { "<leader>,", desc = "quickfix prev" },
   { "<leader>.", desc = "quickfix next" },

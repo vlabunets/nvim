@@ -2,6 +2,24 @@
 local yank_group = vim.api.nvim_create_augroup("nvim_yank_highlight", {})
 vim.api.nvim_create_autocmd("TextYankPost",
   { group = yank_group, callback = function() vim.hl.on_yank({ higroup = 'IncSearch', timeout = 100 }) end })
+-- Only the active window shows the cursorline. Limited to file buffers: picker, explorer and
+-- diffview panels mark their selection with cursorline and must keep it when unfocused.
+-- w:auto_cursorline remembers which windows had it on, so a window with it off stays off.
+local cursorline_group = vim.api.nvim_create_augroup("nvim_active_cursorline", {})
+vim.api.nvim_create_autocmd("WinLeave", { group = cursorline_group,
+  callback = function()
+    if vim.bo.buftype == "" and vim.wo.cursorline then
+      vim.w.auto_cursorline = true
+      vim.wo.cursorline = false
+    end
+  end })
+vim.api.nvim_create_autocmd({ "WinEnter", "BufWinEnter" }, { group = cursorline_group,
+  callback = function()
+    if vim.w.auto_cursorline then
+      vim.w.auto_cursorline = nil
+      vim.wo.cursorline = true
+    end
+  end })
 -- Disable diagnostics in node_modules (0 is current buffer only)
 local buf_settings_group = vim.api.nvim_create_augroup("nvim_buf_settings", {})
 vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, { group = buf_settings_group, pattern = "*/node_modules/*", command = "lua vim.diagnostic.enable(false, { bufnr = 0 })" })
