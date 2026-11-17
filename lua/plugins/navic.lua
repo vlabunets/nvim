@@ -12,6 +12,7 @@ return {
           preference = nil,
         },
         highlight = true,
+        icons = require("utils.icons").kinds_padded(), -- same icons as the completion menu
         separator = " " .. Nvim.icons.caretRight .. " ",
         depth_limit = 0,
         depth_limit_indicator = "..",

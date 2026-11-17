@@ -71,6 +71,10 @@ return {
 					"snippet_forward",
 					"fallback",
 				},
+				-- Enter accepts the highlighted item (or the first one) without inserting a newline.
+				-- With the menu closed, Enter is a normal newline. Close the menu with <C-e> to get a
+				-- newline while it's open.
+				["<CR>"] = { "select_and_accept", "fallback" },
 				-- Docs scroll with the preset's <C-b> / <C-f>; <S-k> / <S-j> swallowed typed capital K and J
 				["<C-Space>"] = {
 					function(cmp)
@@ -169,7 +173,8 @@ return {
 					border = Nvim.ui.float.border,
 					draw = {
 						columns = { { "label", "label_description", gap = 1 }, { "kind_icon", "kind", gap = 1 } },
-						treesitter = {},
+						-- Color LSP item labels with Treesitter, like the code they'll insert
+						treesitter = { "lsp" },
 					},
 				},
 
@@ -200,39 +205,8 @@ return {
 			},
 
 			appearance = {
-				kind_icons = {
-					Copilot = "",
-					Text = "󰉿",
-					Method = "󰊕",
-					Function = "󰊕",
-					Constructor = "󰒓",
-
-					Field = "󰜢",
-					Variable = "󰆦",
-					Property = "󰖷",
-
-					Class = "󱡠",
-					Interface = "󱡠",
-					Struct = "󱡠",
-					Module = "󰅩",
-
-					Unit = "󰪚",
-					Value = "󰦨",
-					Enum = "󰦨",
-					EnumMember = "󰦨",
-
-					Keyword = "󰻾",
-					Constant = "󰏿",
-
-					Snippet = "󱄽",
-					Color = "󰏘",
-					File = "󰈔",
-					Reference = "󰬲",
-					Folder = "󰉋",
-					Event = "󱐋",
-					Operator = "󰪚",
-					TypeParameter = "󰬛",
-				},
+				-- Shared with navic and the snacks symbol pickers (utils/icons.lua)
+				kind_icons = require("utils.icons").kinds,
 			},
 		},
 		-- allows extending the enabled_providers array elsewhere in your config

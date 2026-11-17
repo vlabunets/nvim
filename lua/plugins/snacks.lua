@@ -119,6 +119,8 @@ return {
 			explorer = { enabled = true },
 			picker = {
 				enabled = true,
+				-- Symbol pickers use the same kind icons as the completion menu (merged over snacks' own)
+				icons = { kinds = require("utils.icons").kinds_padded() },
 				explorer = {
 					opts = {
 						win = {

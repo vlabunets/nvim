@@ -135,4 +135,55 @@ local icons = {
   wrench              = "  ",
 }
 
+-- LSP kinds (completion items and document symbols), shared by blink.cmp, navic and the snacks
+-- symbol pickers so a function or class looks the same everywhere. Bare glyphs, no padding.
+icons.kinds = {
+  Array         = "󰅪",
+  Boolean       = "󰨙",
+  Class         = "󱡠",
+  Color         = "󰏘",
+  Constant      = "󰏿",
+  Constructor   = "󰒓",
+  Copilot       = "",
+  Enum          = "󰦨",
+  EnumMember    = "󰦨",
+  Event         = "󱐋",
+  Field         = "󰜢",
+  File          = "󰈔",
+  Folder        = "󰉋",
+  Function      = "󰊕",
+  Interface     = "󱡠",
+  Key           = "󰌋",
+  Keyword       = "󰻾",
+  Method        = "󰊕",
+  Module        = "󰅩",
+  Namespace     = "󰅩",
+  Null          = "󰟢",
+  Number        = "󰎠",
+  Object        = "󰅩",
+  Operator      = "󰪚",
+  Package       = "󰏗",
+  Property      = "󰖷",
+  Reference     = "󰬲",
+  Snippet       = "󱄽",
+  String        = "󰉿",
+  Struct        = "󱡠",
+  Text          = "󰉿",
+  TypeParameter = "󰬛",
+  Unit          = "󰪚",
+  Value         = "󰦨",
+  Variable      = "󰆦",
+}
+
+--- The kind icons followed by a space, for plugins that print the icon right before the name
+--- (navic, snacks pickers).
+---@return table<string, string>
+function icons.kinds_padded()
+  local padded = {}
+  for kind, icon in pairs(icons.kinds) do
+    padded[kind] = icon .. " "
+  end
+  return padded
+end
+
 return icons
