@@ -12,6 +12,14 @@ vim.lsp.config('*', {
             lineFoldingOnly = true
         }
 
+        -- File renames from the snacks explorer and yazi send workspace/willRenameFiles (servers
+        -- return import updates) and didRenameFiles. Neovim advertises neither by default.
+        capabilities.workspace = capabilities.workspace or {}
+        capabilities.workspace.fileOperations = vim.tbl_extend("force", capabilities.workspace.fileOperations or {}, {
+            willRename = true,
+            didRename = true,
+        })
+
         return capabilities
     end)(),
 })
@@ -43,7 +51,7 @@ local capability_overrides = {
     html = { documentFormattingProvider = true },
     jsonls = { documentFormattingProvider = true },
     prismals = { documentFormattingProvider = true },
-    -- Inline color swatches
+    -- Tailwind class colors, painted by nvim-highlight-colors
     tailwindcss = { colorProvider = true },
 }
 
@@ -56,6 +64,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
             for capability, value in pairs(overrides) do
                 client.server_capabilities[capability] = value
             end
+        end
+        -- nvim-highlight-colors paints all colors, including the ones servers report (it requests
+        -- textDocument/documentColor itself, so Tailwind classes get the project's theme colors).
+        -- Neovim's built-in document colors would paint the same values a second time.
+        if client then
+            vim.lsp.document_color.enable(false, { bufnr = args.buf, client_id = client.id })
         end
     end,
 })
